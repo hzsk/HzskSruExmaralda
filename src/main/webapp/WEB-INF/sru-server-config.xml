@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoint-config xmlns="http://www.clarin.eu/sru-server/1.0/">
+    <databaseInfo>
+        <title xml:lang="de">The Hamburg MapTask Corpus (HAMATAC) [DEBUG: xml+de]</title>
+        <title xml:lang="en" primary="true">The Hamburg MapTask Corpus (HAMATAC) [DEBUG: xml+en]</title>
+        <description xml:lang="de">Suche im Hamburg MapTask Corpus (HAMATAC) via SRU.</description>
+        <description xml:lang="en" primary="true">Search the Hamburg MapTask Corpus (HAMATAC) via SRU.</description>
+        <author xml:lang="en">Hamburg Centre for Language Corpora</author>
+        <author xml:lang="de" primary="true">Hamburger Zentrum für Sprachkorpora</author>
+    </databaseInfo>
+    
+    <indexInfo>
+        <set name="fcs" identifier="clarin.eu/fcs/resource">
+            <title xml:lang="de">CLARIN Content Search</title>
+            <title xml:lang="en" primary="true">CLARIN Content Search</title>
+        </set>
+        <index search="true" scan="false" sort="false">
+            <title xml:lang="en" primary="true">Words</title>
+            <map primary="true">
+                <name set="fcs">words</name>
+            </map>
+        </index>
+    </indexInfo>
+    
+    <schemaInfo>
+        <schema identifier="http://clarin.eu/fcs/resource" name="fcs"
+                sort="false" retrieve="true">
+            <title xml:lang="en" primary="true">CLARIN Content Search</title>
+        </schema>
+    </schemaInfo>
+
+</endpoint-config>

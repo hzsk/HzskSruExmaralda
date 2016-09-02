@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+    Document   : context.xml
+    Created on : 7. März 2013, 16:09
+    Author     : Z2
+    Description: context descriptor
+-->
+
+<!-- for HZSK SRU using mysql databases:
+     avoid commiting passwords and usernames to public repos, plz... -->
+<Context path="/HZSKsru" antiJARLocking="true" docBase="webapps/HZSKsru.war">
+    <ResourceLink name="jdbc/corpora"
+              auth="Container"
+              type="javax.sql.DataSource"
+              factory="org.apache.tomcat.jdbc.pool.DataSourceFactory"
+              driverClassName="com.mysql.jdbc.Driver"
+              url="jdbc:mysql://localhost:3306/corpora?autoReconnect=true&amp;useSSL=false"
+              useSSL="false"
+              validationQuery="SELECT 1"
+              testOnConnect="true" testWhileIdle="true"
+              minActive="1" maxActive="15"
+              minIdle="3" maxIdle="10"/>
+</Context>

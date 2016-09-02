@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ed:EndpointDescription
+    xmlns:ed="http://clarin.eu/fcs/endpoint-description" version="2">
+  <ed:Capabilities>
+    <ed:Capability>http://clarin.eu/fcs/capability/basic-search</ed:Capability>
+    <ed:Capability>http://clarin.eu/fcs/capability/advanced-search</ed:Capability>
+  </ed:Capabilities>
+  <ed:SupportedDataViews>
+    <ed:SupportedDataView id="kwic_dataview" delivery-policy="send-by-default">
+        application/x-clarin-fcs-kwic+xml
+    </ed:SupportedDataView>
+    <ed:SupportedDataView id="hits_dataview" delivery-policy="send-by-default">
+        application/x-clarin-fcs-hits+xml
+    </ed:SupportedDataView>
+    <ed:SupportedDataView id="adv_dataview" delivery-policy="send-by-default">
+        application/x-clarin-fcs-adv+xml
+    </ed:SupportedDataView>
+  </ed:SupportedDataViews>
+  <ed:SupportedLayers>
+    <ed:SupportedLayer id="layer1"
+          result-id="http://www.corpora.uni-hamburg.de/layers/orth1">
+        orth
+    </ed:SupportedLayer>
+    <ed:SupportedLayer id="layer5"
+        result-id="http://www.corpora.uni-hamburg.de/layers/lemma1"
+        qualifier="lemma">
+        lemma
+    </ed:SupportedLayer>
+    <ed:SupportedLayer id="layer2"
+        result-id="http://www.corpora.uni-hamburg.de/layers/pos1"
+        alt-value-info="stts"
+        alt-value-info-uri="http://www.ims.uni-stuttgart.de/forschung/ressourcen/lexika/TagSets/stts-table.html">
+        pos
+    </ed:SupportedLayer>
+    <ed:SupportedLayer id="layer2_1"
+        result-id="http://www.corpora.uni-hamburg.de/layers/pos2"
+        qualifier="sup"
+        alt-value-info="stts too"
+        alt-value-info-uri="http://www.ims.uni-stuttgart.de/forschung/ressourcen/lexika/TagSets/stts-table.html">
+        pos
+    </ed:SupportedLayer>
+    <ed:SupportedLayer id="layer3"
+        result-id="http://www.corpora.uni-hamburg.de/layers/phon1"
+        qualifier="phonetic">
+        phonetic
+    </ed:SupportedLayer>
+    <ed:SupportedLayer id="layer4"
+          result-id="http://www.corpora.uni-hamburg.de/layers/x-disfluency1">
+        x-disfluency
+    </ed:SupportedLayer>
+    <ed:SupportedLayer id="layer6"
+          result-id="http://www.corpora.uni-hamburg.de/layers/x-c">
+        x-c
+    </ed:SupportedLayer>
+  </ed:SupportedLayers>
+  <ed:Resources>
+    <ed:Resource pid="http://hdl.handle.net/11858/00-248C-0000-000E-017A-1">
+      <ed:Title xml:lang="de">HAMATAC [DEBUG: xml+en]</ed:Title>
+      <ed:Title xml:lang="en">HAMATAC [DEBUG: xml+de]</ed:Title>
+      <ed:Description xml:lang="de">The HAM ATTAK [DEBUG: xml+de]</ed:Description>
+      <ed:Description xml:lang="en">The HAM ATTACK [DEBUG: xml:en]</ed:Description>
+      <ed:LandingPageURI>
+        http://www.corpora.uni-hamburg.de/repository/col:hamatac
+      </ed:LandingPageURI>
+      <ed:Languages>
+        <ed:Language>deu</ed:Language>
+      </ed:Languages>
+      <ed:AvailableDataViews ref="kwic_dataview hits_dataview adv_dataview"/>
+      <ed:AvailableLayers ref="layer1"/>
+      <ed:AvailableLayers ref="layer2"/>
+      <ed:AvailableLayers ref="layer2_1"/>
+      <ed:AvailableLayers ref="layer3"/>
+      <ed:AvailableLayers ref="layer4"/>
+      <ed:AvailableLayers ref="layer5"/>
+      <ed:AvailableLayers ref="layer6"/>
+    </ed:Resource>
+  </ed:Resources>
+</ed:EndpointDescription>
