@@ -69,3 +69,7 @@ endpoint description in WEB-INF dir.
 
 SRU scan doesn't have anything yet, either upstream classes provide something
 for it or not.
+
+## HZSK git
+
+If you are working within HZSK please also push to $GITDIR/HZSKsru.git.
