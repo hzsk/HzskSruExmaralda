@@ -3,7 +3,7 @@
  * @copyright Hamburger Zentrum für Sprach Korpora
  */
 
-package de.uni_hamburg.corpora.hzsksru;
+package de.uni_hamburg.corpora.sru;
 
 import eu.clarin.sru.server.SRUDiagnosticList;
 

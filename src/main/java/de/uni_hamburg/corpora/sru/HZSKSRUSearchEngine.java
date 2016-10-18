@@ -1,6 +1,6 @@
 /*
  */
-package de.uni_hamburg.corpora.hzsksru;
+package de.uni_hamburg.corpora.sru;
 
 import java.net.URI;
 import java.net.URL;

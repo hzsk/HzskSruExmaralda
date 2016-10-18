@@ -3,7 +3,7 @@
  * @copyright Hamburger Zentrum für Korpora
  *
  */
-package de.uni_hamburg.corpora.hzsksru;
+package de.uni_hamburg.corpora.sru;
 
 import java.util.List;
 import java.util.ArrayList;
