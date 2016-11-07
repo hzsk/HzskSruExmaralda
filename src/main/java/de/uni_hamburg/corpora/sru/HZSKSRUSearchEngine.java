@@ -58,11 +58,6 @@ import eu.clarin.sru.server.SRUServerConfig;
  */
 public class HZSKSRUSearchEngine extends SimpleEndpointSearchEngineBase {
 
-    private static final String SUPPORTED_RELATION_CQL_1_1 = "scr";
-    private static final String SUPPORTED_RELATION_CQL_1_2 = "="; 
-    private static final String SUPPORTED_RELATION_EXACT = "exact";
-    private static final String INDEX_CQL_SERVERCHOICE = "cql.serverChoice";
-    private static final String INDEX_FCS_WORDS = "words";
     private static final String FCS_NS_OLD = "http://clarin.eu/fcs/1.0";
     private static final String CLARIN_FCS_RECORD_SCHEMA_OLD = FCS_NS_OLD;
     private static final String FCS_NS = "http://clarin.eu/fcs/resource";
@@ -72,11 +67,11 @@ public class HZSKSRUSearchEngine extends SimpleEndpointSearchEngineBase {
     private static final int HZSK_MAX_CORPORA_IN_DB = 250;
     private static final Logger logger =
             LoggerFactory.getLogger(HZSKSRUSearchEngine.class);
-    
+
     private SQLCorpusConnection corpusDB;
     private AnnisConnection annis;
 
-    /** 
+    /**
      * Create endpoint description from bundled XML, fallback to DB.
      * XML solution uses endpoint-description.xml in WEB-INF by context, DB
      * expects to find attributes in ex_corpus_desc_item table.
@@ -98,10 +93,10 @@ public class HZSKSRUSearchEngine extends SimpleEndpointSearchEngineBase {
         }
         // else parse DB
         try {
-            DBDescriptionResult resources = 
+            DBDescriptionResult resources =
                 corpusDB.getResourceInfos(HZSK_MAX_CORPORA_IN_DB);
             List entries = new ArrayList<ResourceInfo>();
-            // Using the same stuff for 
+            // Using the same stuff for
             List<Layer> commonLayers = new ArrayList<Layer>();
             List<DataView> commonDataviews = new ArrayList<DataView>();
             for (int resourceIndex = 0; resourceIndex < resources.getLength();
@@ -116,7 +111,7 @@ public class HZSKSRUSearchEngine extends SimpleEndpointSearchEngineBase {
 
                 // common for all of ours (don't know why repeated)
                 List<Layer> layers = new ArrayList<Layer>();
-                layers.add(new Layer("layer1", 
+                layers.add(new Layer("layer1",
                         new URI("http://www.corpora.uni-hamburg.de/layers/orth1"),
                         "orth"));
                 List<DataView> dataviews = new ArrayList<DataView>();
@@ -133,7 +128,7 @@ public class HZSKSRUSearchEngine extends SimpleEndpointSearchEngineBase {
                 entries.add(ri);
             }
             List<URI> capabilities = new ArrayList<URI>();
-            commonLayers.add(new Layer("layer1", 
+            commonLayers.add(new Layer("layer1",
                     new URI("http://www.corpora.uni-hamburg.de/layers/orth1"),
                     "orth"));
             commonDataviews.add(new DataView("kwic_dataview",
@@ -142,9 +137,9 @@ public class HZSKSRUSearchEngine extends SimpleEndpointSearchEngineBase {
             commonDataviews.add(new DataView("hits_dataview",
                         "application/x-clarin-fcs-hits+xml",
                         DataView.DeliveryPolicy.SEND_BY_DEFAULT));
-            capabilities.add(new 
+            capabilities.add(new
                     URI("http://clarin.eu/fcs/capability/basic-search"));
-            SimpleEndpointDescription resourceInfos = 
+            SimpleEndpointDescription resourceInfos =
                 new SimpleEndpointDescription(capabilities, commonDataviews,
                         commonLayers,
                         entries, false);
@@ -152,7 +147,7 @@ public class HZSKSRUSearchEngine extends SimpleEndpointSearchEngineBase {
         } catch (SQLException e) {
             logger.error("error processing query", e);
             throw new SRUConfigException(
-                    "Error processing query " + e + ": " + e.getMessage() + 
+                    "Error processing query " + e + ": " + e.getMessage() +
                     "\r\n" + e.getStackTrace()[0],
                     e);
         }
@@ -225,37 +220,11 @@ public class HZSKSRUSearchEngine extends SimpleEndpointSearchEngineBase {
                     + "\" is not supported by this endpoint.");
         }
 
-        /* translate query from AST to local simplified query data struct. */
-        HZSKQuery hzskQuery = null;
-        System.out.println("DEBUG query type: " + request.getQueryType());
-        if (request.isQueryType(Constants.FCS_QUERY_TYPE_FCS)) {
-            /*
-             * Got a FCS query (SRU 2.0).
-             * Translate to a DB search string
-             */
-            final FCSQuery query = request.getQuery(FCSQuery.class);
-            System.out.println("FCS DEBUG: " + query.getParsedQuery().toString());
-            hzskQuery = translateFCStoHZSK(query.getParsedQuery());
-        } else if (request.isQueryType(Constants.FCS_QUERY_TYPE_CQL)) {
-            /*
-             * Got a CQL query (either SRU 1.1 or higher).
-             * Translate to a DB search string
-             */
-            final CQLQuery query = request.getQuery(CQLQuery.class);
-            System.out.println("CQL DEBUG: " + 
-                    query.getParsedQuery().toCQL());
-
-            hzskQuery = translateCQLtoHZSK(query.getParsedQuery(), 0);
-        } else {
-            /*
-             * Got something else we don't support. Send error ...
-             */
-            throw new SRUException(
-                    SRUConstants.SRU_CANNOT_PROCESS_QUERY_REASON_UNKNOWN,
-                    "Queries with queryType '" +
-                            request.getQueryType() +
-                    "' are not supported by this CLARIN-FCS Endpoint.");
-        }
+        /* use our Query stuff to store the query instead of all the request
+         * stuff
+         */
+        HZSKQuery hzskQuery = new HZSKQuery();
+        hzskQuery.initialise(request);
 
         // perform queries
         int startRecord = request.getStartRecord();
@@ -271,7 +240,7 @@ public class HZSKSRUSearchEngine extends SimpleEndpointSearchEngineBase {
             logger.error("error processing query", e);
             throw new SRUException(
                     SRUConstants.SRU_CANNOT_PROCESS_QUERY_REASON_UNKNOWN,
-                    "Error processing query " + e + ": " + e.getMessage() + 
+                    "Error processing query " + e + ": " + e.getMessage() +
                     "\r\n" + e.getStackTrace()[0],
                     e);
         }
@@ -283,145 +252,16 @@ public class HZSKSRUSearchEngine extends SimpleEndpointSearchEngineBase {
             logger.error("error processing query", e);
             throw new SRUException(
                     SRUConstants.SRU_CANNOT_PROCESS_QUERY_REASON_UNKNOWN,
-                    "Error processing query " + e + ": " + e.getMessage() + 
+                    "Error processing query " + e + ": " + e.getMessage() +
                     "\r\n" + e.getStackTrace()[0],
                     e);
         }
-        return new HZSKSRUSearchResultSet(diagnostics, 
+        return new HZSKSRUSearchResultSet(diagnostics,
                 AdvancedSearchResultSet.merge(dBresult, aResult),
                 request);
 
     }
 
-    // to traverse full syntax tree you ought to be recursive and stuff
-    private HZSKQuery translateCQLtoHZSK(CQLNode query, int recursion) throws SRUException {
-        HZSKQuery ourQuery = new HZSKQuery();
-        if (query instanceof CQLTermNode) {
-            final CQLTermNode root = (CQLTermNode) query;
-
-            // XXX: this is temp hack until I figure out why FCS QL don't come
-            // through
-            if ((INDEX_CQL_SERVERCHOICE.equals(root.getIndex())
-                    || INDEX_FCS_WORDS.equals(root.getIndex()))) {
-                // pass
-            } else {
-                throw new SRUException(SRUConstants.SRU_UNSUPPORTED_INDEX,
-                        root.getIndex(), "Index \"" + root.getIndex()
-                        + "\" is not supported.");
-            }
-
-            // only allow "=" relation without any modifiers
-            final CQLRelation relation = root.getRelation();
-            final String baseRel = relation.getBase();
-            if (!(SUPPORTED_RELATION_CQL_1_1.equals(baseRel)
-                    || SUPPORTED_RELATION_CQL_1_2.equals(baseRel)
-                    || SUPPORTED_RELATION_EXACT.equals(baseRel))) {
-                throw new SRUException(SRUConstants.SRU_UNSUPPORTED_RELATION,
-                        relation.getBase(), "Relation \""
-                        + relation.getBase() + "\" is not supported.");
-            }
-            List<Modifier> modifiers = relation.getModifiers();
-            if ((modifiers != null) && !modifiers.isEmpty()) {
-                Modifier modifier = modifiers.get(0);
-                throw new SRUException(
-                        SRUConstants.SRU_UNSUPPORTED_RELATION_MODIFIER,
-                        modifier.getValue(), "Relation modifier \""
-                        + modifier.getValue() + "\" is not supported.");
-            }
-
-            // check term
-            final String term = root.getTerm();
-            if ((term == null) || term.isEmpty()) {
-                throw new SRUException(SRUConstants.SRU_EMPTY_TERM_UNSUPPORTED,
-                        "An empty term is not supported.");
-            }
-            ourQuery = new HZSKQuery(term);
-        } else if (query instanceof CQLBooleanNode) {
-            if (recursion > 0) {
-                throw new SRUException(SRUConstants.SRU_QUERY_FEATURE_UNSUPPORTED,
-                        "Server currently does not support arbitrary nesting "
-                        + "in search terms.");
-            }
-            String op = null;
-            if (query instanceof CQLAndNode) {
-                // I'm not gonna do full AST traversal recursion
-                CQLAndNode andNode = (CQLAndNode) query;
-                CQLNode lhs = andNode.getLeftOperand();
-                CQLNode rhs = andNode.getRightOperand();
-                HZSKQuery leftq = translateCQLtoHZSK(lhs, recursion + 1);
-                HZSKQuery rightq = translateCQLtoHZSK(rhs, recursion + 1);
-                ourQuery = new HZSKQuery(leftq, rightq, "and");
-            } else {
-                throw new SRUException(
-                        SRUConstants.SRU_UNSUPPORTED_BOOLEAN_OPERATOR,
-                        "!AND", "Server only supports AND operator so far");
-            }
-        }
-        if (ourQuery.isUsable()) {
-            return ourQuery;
-        } else {
-            throw new SRUException(SRUConstants.SRU_QUERY_FEATURE_UNSUPPORTED,
-                "Server currently supportes term-only query "
-                + "(CQL conformance level 0).");
-        }
-    }
-
-    private HZSKQuery translateFCStoHZSK(QueryNode query) throws SRUException {
-        HZSKQuery ourQuery = new HZSKQuery();
-        if (query instanceof QuerySegment) {
-            QuerySegment segment = (QuerySegment) query;
-            if ((segment.getMinOccurs() == 1) && 
-                    (segment.getMaxOccurs() == 1)) {
-                QueryNode child = segment.getExpression();
-                if (child instanceof Expression) {
-                    Expression expression = (Expression) child;
-                    System.out.println("FCS DEBUG: " + expression);
-                    // expression.getLayerIdentifier(),
-                    // expression.getLayerQualifier()
-                    // expression.getOperator() == Operator.
-                    // expression.getRegexFlags()
-                    if (expression.getLayerIdentifier().equals("text") &&
-                            (expression.getLayerQualifier() == null)) {
-                        ourQuery.setTextSearch(
-                                expression.getRegexValue());
-                    } else if (expression.getLayerIdentifier().equals("pos") &&
-                            (expression.getLayerQualifier() == null)) {
-                        ourQuery.setPosSearch(
-                                expression.getRegexValue());
-                    } else if (expression.getLayerIdentifier().equals("lemma") &&
-                            (expression.getLayerQualifier() == null)) {
-                        ourQuery.setLemmaSearch(
-                                expression.getRegexValue());
-                    } else {
-                        throw new SRUException(
-                                Constants.FCS_DIAGNOSTIC_GENERAL_QUERY_TOO_COMPLEX_CANNOT_PERFORM_QUERY,
-                                "Endpoint does not support unqualified " +
-                                "layer with id " + 
-                                expression.getLayerIdentifier());
-                    }
-                } else {
-                    throw new SRUException(
-                            Constants.FCS_DIAGNOSTIC_GENERAL_QUERY_TOO_COMPLEX_CANNOT_PERFORM_QUERY,
-                            "Endpoint only supports simple expressions");
-                }
-            } else {
-                throw new SRUException(
-                        Constants.FCS_DIAGNOSTIC_GENERAL_QUERY_TOO_COMPLEX_CANNOT_PERFORM_QUERY,
-                        "Endpoint only supports default occurances in segments");
-            }
-        } else if (query instanceof QuerySequence) {
-            QuerySequence sequence = (QuerySequence) query;
-            for (QueryNode child : sequence.getChildren()) {
-                HZSKQuery childQuery = translateFCStoHZSK(child);
-                ourQuery = new HZSKQuery(childQuery, ourQuery, "and");
-            }
-        } else  {
-            throw new SRUException(
-                    Constants.FCS_DIAGNOSTIC_GENERAL_QUERY_TOO_COMPLEX_CANNOT_PERFORM_QUERY,
-                    "Endpoint only supports some sequences or segment queries");
-        }
-        return ourQuery;
-    }
 
     /** Terminate database connection. */
     @Override
