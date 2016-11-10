@@ -65,6 +65,8 @@ public class HZSKSRUSearchEngine extends SimpleEndpointSearchEngineBase {
     private static final String FCS_PREFIX = "fcs";
     private static final String CLARIN_CONTEXT = "x-cmd-context";
     private static final int HZSK_MAX_CORPORA_IN_DB = 250;
+    private static final String HAMATAC_PID =
+        "http://hdl.handle.net/11022/0000-0000-63C5-2";
     private static final Logger logger =
             LoggerFactory.getLogger(HZSKSRUSearchEngine.class);
 
@@ -164,7 +166,8 @@ public class HZSKSRUSearchEngine extends SimpleEndpointSearchEngineBase {
             Builder builder, Map<String, String> params)
     throws SRUConfigException {
         corpusDB = new SQLCorpusConnection();
-        annis = new AnnisConnection();
+        //annis = new AnnisConnection();
+        annis = null;
     }
 
     /** Just blurt out a term on a specific search.
@@ -212,7 +215,9 @@ public class HZSKSRUSearchEngine extends SimpleEndpointSearchEngineBase {
         }
 
         String context = request.getExtraRequestData(CLARIN_CONTEXT);
-        if ((context != null) && !context.equals("http://hdl.handle.net/11858/00-248C-0000-000E-017A-1")) {
+        if ((context != null) &&
+                !context.equals(HAMATAC_PID))
+        {
             throw new SRUException(
                     SRUConstants.SRU_UNSUPPORTED_PARAMETER_VALUE,
                     context, "The value of the parameter \""
@@ -233,28 +238,32 @@ public class HZSKSRUSearchEngine extends SimpleEndpointSearchEngineBase {
             startRecord--;
         }
         AdvancedSearchResultSet dBresult = null;
-        try {
-            dBresult = corpusDB.query(hzskQuery,
-                    startRecord, maximumRecords);
-        } catch (Exception e) {
-            logger.error("error processing query", e);
-            throw new SRUException(
-                    SRUConstants.SRU_CANNOT_PROCESS_QUERY_REASON_UNKNOWN,
-                    "Error processing query " + e + ": " + e.getMessage() +
-                    "\r\n" + e.getStackTrace()[0],
-                    e);
+        if (corpusDB != null) {
+            try {
+                dBresult = corpusDB.query(hzskQuery,
+                        startRecord, maximumRecords);
+            } catch (Exception e) {
+                logger.error("error processing query", e);
+                throw new SRUException(
+                        SRUConstants.SRU_CANNOT_PROCESS_QUERY_REASON_UNKNOWN,
+                        "Error processing query " + e + ": " + e.getMessage() +
+                        "\r\n" + e.getStackTrace()[0],
+                        e);
+            }
         }
         AdvancedSearchResultSet aResult = null;
-        try {
-            aResult = annis.query(hzskQuery, request.getStartRecord(),
-                    maximumRecords);
-        } catch (Exception e) {
-            logger.error("error processing query", e);
-            throw new SRUException(
-                    SRUConstants.SRU_CANNOT_PROCESS_QUERY_REASON_UNKNOWN,
-                    "Error processing query " + e + ": " + e.getMessage() +
-                    "\r\n" + e.getStackTrace()[0],
-                    e);
+        if (annis != null) {
+            try {
+                aResult = annis.query(hzskQuery, request.getStartRecord(),
+                        maximumRecords);
+            } catch (Exception e) {
+                logger.error("error processing query", e);
+                throw new SRUException(
+                        SRUConstants.SRU_CANNOT_PROCESS_QUERY_REASON_UNKNOWN,
+                        "Error processing query " + e + ": " + e.getMessage() +
+                        "\r\n" + e.getStackTrace()[0],
+                        e);
+            }
         }
         return new HZSKSRUSearchResultSet(diagnostics,
                 AdvancedSearchResultSet.merge(dBresult, aResult),
