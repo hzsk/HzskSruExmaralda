@@ -1,6 +1,6 @@
 /**
  * @file HZSKSRUSearchResultSet.java
- * @copyright Hamburger Zentrum für Sprach Korpora 
+ * @copyright Hamburger Zentrum für Sprach Korpora
  *      http://corpora.uni-hamburg.de
  */
 package de.uni_hamburg.corpora.sru;
@@ -114,7 +114,7 @@ public class HZSKSRUSearchResultSet extends SRUSearchResultSet {
         return advancedResult.getRecordAt(pos).getPID();
     }
 
-    /** Advance to next result and return whether it exists. 
+    /** Advance to next result and return whether it exists.
      * @sideeffect advances DB pointer.
      */
     @Override
@@ -134,96 +134,155 @@ public class HZSKSRUSearchResultSet extends SRUSearchResultSet {
         return null;
     }
 
-    /** Write hits and kwic dataview of current match. 
+    /** Write hits and kwic dataview of current match.
      * Will do something advanced in future.
      */
     @Override
     public void writeRecord(XMLStreamWriter writer)
             throws XMLStreamException {
-        final AdvancedSearchResult rec = 
+        final AdvancedSearchResult rec =
             advancedResult.getRecordAt(pos);
+        System.out.println("DEBUG: writing XML at " + pos);
         // advanced_
         XMLStreamWriterHelper.writeStartResource(writer, rec.getPID(),
                 rec.getPage());
+        System.out.println("DEBUG½: writing XML at " + pos);
         XMLStreamWriterHelper.writeStartResourceFragment(writer, null,
                 null);
+        System.out.println("DEBUG1: writing XML at " + pos);
         AdvancedDataViewWriter helper = new AdvancedDataViewWriter(
-                AdvancedDataViewWriter.Unit.ITEM);
-        URI layerId = 
+                AdvancedDataViewWriter.Unit.TIMESTAMP);
+        System.out.println("DEBUG§: writing XML at " + pos);
+        URI layerId =
             URI.create("http://corpora.uni-hamburg.de/Layers/orth1");
-        List<AdvancedSearchResultSegment> highlights = 
+        System.out.println("DEBUG!!: writing XML at " + pos);
+        List<AdvancedSearchResultSegment> highlights =
             rec.getResultHighlights();
+        System.out.println("DEBUG: highlights? " + highlights.size());
         for (AdvancedSearchResultSegment seg : highlights) {
+            System.out.println("DEBUG: adding" + seg.getStart() + "–" +
+                    seg.getEnd() + "\t" + seg.getText());
             if (seg.isHighlighted()) {
-                helper.addSpan(layerId, seg.getStart(), seg.getEnd(),
-                        seg.getText(), 1);
+                helper.addSpan(layerId, Math.round(seg.getStart()),
+                        Math.round(seg.getEnd()), seg.getText(), 1);
             } else {
-                helper.addSpan(layerId, seg.getStart(), seg.getEnd(),
-                        seg.getText());
+                helper.addSpan(layerId, Math.round(seg.getStart()),
+                        Math.round(seg.getEnd()), seg.getText());
             }
         }
+        System.out.println("DEBUG2: writing XML at " + pos);
         for(Map.Entry<String, List<AdvancedSearchResultSegment>> entry :
                 rec.getChildLayers().entrySet()) {
             String name = entry.getKey();
-            List<AdvancedSearchResultSegment> segments = 
+            System.out.println("DEBUG4: writing layer " + name);
+            List<AdvancedSearchResultSegment> segments =
                 entry.getValue();
             URI layer = null;
             try {
                 // words and stuff
                 if (name.equals("pos")) {
-                    layer = new 
+                    layer = new
                         URI("http://corpora.uni-hamburg.de/Layers/pos1");
                     // pos supplements??
                 } else if (name.equals("pos-sup")) {
-                    layer = new 
+                    layer = new
                         URI("http://corpora.uni-hamburg.de/Layers/pos2");
                     // C=???
                 } else if (name.equals("morph")) {
-                    layer = new 
+                    layer = new
                         URI("http://corpora.uni-hamburg.de/Layers/msd1");
                     // C=???
                 } else if (name.equals("c")) {
-                    layer = new 
+                    layer = new
                         URI("http://corpora.uni-hamburg.de/Layers/x-c");
                 } else if (name.equals("lemma")) {
-                    layer = new 
+                    layer = new
                         URI("http://corpora.uni-hamburg.de/Layers/lemma1");
                 // events and stuff
                 } else if (name.equals("pho")) {
-                    layer = new 
+                    layer = new
                         URI("http://corpora.uni-hamburg.de/Layers/phon1");
                 } else if (name.equals("disfluency")) {
-                    layer = new 
+                    layer = new
                         URI("http://corpora.uni-hamburg.de/Layers/x-disfluency1");
                 } else if (name.equals("token")) {
-                    layer = new 
+                    layer = new
                         URI("http://corpora.uni-hamburg.de/Layers/x-word1");
-                // something unexpected 
+                // something unexpected
                 } else {
                     System.out.println("MISSING layer name: " + name);
-                    layer = new 
+                    layer = new
                         URI("http://corpora.uni-hamburg.de/Layers/unknown1");
                 }
             } catch (URISyntaxException use) {
                 System.out.println("Some config error with HZSK and URIs: " +
                         use.getStackTrace());
             }
+            AdvancedSearchResultSegment previousSegments = null;
             for (AdvancedSearchResultSegment segment : segments) {
-                if (name.equals("pos") || (name.equals("pos-sup"))) {
-                    helper.addSpan(layer, segment.getStart(), 
-                            segment.getEnd(), STTS2UDConverter.fromSTTS(
-                                segment.getAnnotation()), 
+                System.out.println("DEBUG5: maybe writing segment " +
+                        segment.getStart() + "–" + segment.getEnd() +
+                        ":" + segment.getText() + " / " +
+                        segment.getAnnotation());
+                if (previousSegments == null) {
+                    previousSegments = segment;
+                }
+                else if ((previousSegments.getStart() < 0) ||
+                        (previousSegments.getEnd() < 0)) {
+                    // FIXME: should interpolate;
+                    System.out.println("DEBUGX: no");
+                    previousSegments = segment;
+                    continue;
+                }
+                else if (((int)Math.round(previousSegments.getStart()) ==
+                            (int)Math.round(segment.getStart())) &&
+                        ((int)Math.round(previousSegments.getEnd()) ==
+                         (int)Math.round(segment.getEnd()))) {
+                    previousSegments.setText(previousSegments.getText() +
+                            "||" + segment.getText());
+                    previousSegments.setAnnotation(
+                            previousSegments.getAnnotation() + "||" +
                             segment.getAnnotation());
                 } else {
-                    helper.addSpan(layer, segment.getStart(), 
-                            segment.getEnd(), segment.getAnnotation());
+                    if (name.equals("pos") || (name.equals("pos-sup"))) {
+                       helper.addSpan(layer,
+                                Math.round(previousSegments.getStart()),
+                                Math.round(previousSegments.getEnd()),
+                                STTS2UDConverter.fromSTTS(
+                                    previousSegments.getAnnotation()),
+                                previousSegments.getAnnotation());
+                    } else {
+                        helper.addSpan(layer,
+                                Math.round(previousSegments.getStart()),
+                                Math.round(previousSegments.getEnd()),
+                                previousSegments.getAnnotation());
+                    }
+                    previousSegments = segment;
                 }
             }
+            if ((previousSegments.getStart() > 0) &&
+                    (previousSegments.getEnd() > 0)) {
+                if (name.equals("pos") || (name.equals("pos-sup"))) {
+                   helper.addSpan(layer,
+                            Math.round(previousSegments.getStart()),
+                            Math.round(previousSegments.getEnd()),
+                            STTS2UDConverter.fromSTTS(
+                                previousSegments.getAnnotation()),
+                            previousSegments.getAnnotation());
+                } else {
+                    helper.addSpan(layer,
+                            Math.round(previousSegments.getStart()),
+                            Math.round(previousSegments.getEnd()),
+                            previousSegments.getAnnotation());
+                }
+           }
         }
+        System.out.println("DEBUG3: writing XML at " + pos);
         helper.writeHitsDataView(writer, layerId);
         helper.writeAdvancedDataView(writer);
         XMLStreamWriterHelper.writeEndResourceFragment(writer);
         XMLStreamWriterHelper.writeEndResource(writer);
+        System.out.println("DEBUG9: writing XML at " + pos);
     }
 
     /** Has none. */

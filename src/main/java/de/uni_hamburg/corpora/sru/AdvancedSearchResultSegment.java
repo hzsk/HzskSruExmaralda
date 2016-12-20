@@ -18,14 +18,14 @@ import java.net.URI;
  * timelines and stuff.
  * @author tpirinen
  */
-public class AdvancedSearchResultSegment 
+public class AdvancedSearchResultSegment
         implements Comparable<AdvancedSearchResultSegment> {
 
     private String annotation;
     private String text;
     private boolean hitness;
-    private int start;
-    private int end;
+    private double start;
+    private double end;
 
     public AdvancedSearchResultSegment(String ann) {
         this.annotation = ann;
@@ -40,7 +40,7 @@ public class AdvancedSearchResultSegment
         this.end = -2;
     }
     public AdvancedSearchResultSegment(String ann, String text,
-            int start, int end) {
+            double start, double end) {
         this.annotation = ann;
         this.text = text;
         this.start = start;
@@ -48,7 +48,7 @@ public class AdvancedSearchResultSegment
         this.hitness = false;
     }
 
-    public AdvancedSearchResultSegment(String text, int start, int end) {
+    public AdvancedSearchResultSegment(String text, double start, double end) {
         this.annotation = text;
         this.text = text;
         this.start = start;
@@ -64,26 +64,34 @@ public class AdvancedSearchResultSegment
         return text;
     }
 
-    public int getStart() {
+    public double getStart() {
         return start;
     }
 
-    public int getEnd() {
+    public double getEnd() {
         return end;
     }
 
-    public void setStart(int start) {
+    public void setText(String text) {
+        this.text = text;
+    }
+
+    public void setAnnotation(String annotation) {
+        this.annotation = annotation;
+    }
+
+    public void setStart(double start) {
         this.start = start;
     }
 
-    public void setEnd(int end) {
+    public void setEnd(double end) {
         this.end = end;
     }
-    
+
     public boolean isHighlighted() {
         return hitness;
     }
-    
+
     public void setHighlighted(boolean highlighted) {
         hitness = highlighted;
     }
@@ -95,14 +103,26 @@ public class AdvancedSearchResultSegment
                 if (this.getAnnotation().equals(rhs.getAnnotation())) {
                     return this.getText().compareTo(rhs.getText());
                 } else {
-                    return 
+                    return
                         this.getAnnotation().compareTo(rhs.getAnnotation());
                 }
             } else {
-                return this.getEnd() - rhs.getEnd();
+                if (this.getEnd() < rhs.getEnd()) {
+                    return -1;
+                } else if (this.getEnd() > rhs.getEnd()) {
+                    return 1;
+                } else {
+                    return 0;
+                }
             }
         } else {
-            return this.getStart() - rhs.getStart();
+            if (this.getStart() < rhs.getStart()) {
+                return -1;
+            } else if (this.getStart() > rhs.getStart()) {
+                return 1;
+            } else {
+                return 0;
+            }
         }
     }
 }

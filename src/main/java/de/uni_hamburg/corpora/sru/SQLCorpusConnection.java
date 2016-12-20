@@ -36,6 +36,8 @@ import java.net.URISyntaxException;
 public class SQLCorpusConnection {
 
     private final int MAX_LAYERS = 10; // don't query more layers under text
+    private final boolean USE_TLI = true; // use tli_{s,e} instead of char_{s,e}
+    private final boolean USE_UTTERANCE_WORD = true; // which part of db...
     private DataSource datasource;
 
     private Connection conn;
@@ -86,7 +88,7 @@ public class SQLCorpusConnection {
             //  Map<String, String> title, Map<String,String> descriptions,
             //     URI landingPageURI,
             //    List<String> languages) {
- 
+
             while (rs.next()) {
                 String recordName = rs.getString("name");
                 String recordGuid = rs.getString("corpus_guid");
@@ -101,7 +103,7 @@ public class SQLCorpusConnection {
                     if (rscount >= maximumRecords) {
                         break;
                     }
-                    DBDescriptionResult.Record rec = 
+                    DBDescriptionResult.Record rec =
                         new DBDescriptionResult.Record(name, guid,
                                 pid, titles, descriptions, landingPageURI,
                                 languages);
@@ -130,7 +132,7 @@ public class SQLCorpusConnection {
                 }
             }
             // tail add last record since it's added in name-changed if clause
-            DBDescriptionResult.Record rec = 
+            DBDescriptionResult.Record rec =
                 new DBDescriptionResult.Record(name, guid,
                         pid, titles, descriptions, landingPageURI,
                         languages);
@@ -159,7 +161,7 @@ public class SQLCorpusConnection {
         return query(query, startRecord, maximumRecords);
     }
 
-    
+
     /** Retrieve advanced search results with segments and layers.
      *  Can be useful for simple queries too, this is to formulate a query that
      *  returns both text and segments, i.e. an advanced view too.
@@ -167,9 +169,9 @@ public class SQLCorpusConnection {
     public AdvancedSearchResultSet query(HZSKQuery query,
             int startRecord, int maximumRecords)
             throws SQLException {
-        AdvancedSearchResultSet sr = new 
+        AdvancedSearchResultSet sr = new
             AdvancedSearchResultSet(maximumRecords);
-        // holding on to 
+        // holding on to
         this.conn = null;
         PreparedStatement prepStmt = null;
         PreparedStatement segStmt = null;
@@ -179,11 +181,10 @@ public class SQLCorpusConnection {
         ResultSet subsegs = null;
         try {
             this.conn = datasource.getConnection();
-            if (query.hasTextSearch() && 
+            if (query.hasTextSearch() &&
                     !(query.hasPosSearch() || query.hasLemmaSearch())) {
                 // find text then all hanging segments
-                // XXX: if looking for disfluencies change
-                prepStmt = prepareTextQuery(query, -1, true);
+                prepStmt = prepareTextQuery(query, -1);
                 prepStmt.setFetchSize(maximumRecords);
                 results = prepStmt.executeQuery();
                 int rsPos = 0;
@@ -194,45 +195,75 @@ public class SQLCorpusConnection {
                     String source = results.getString("name");
                     String pid = results.getString("file_url");
                     String page = results.getString("avail_url");
-                    // FIXME: maybe tli_?
-                    int start = results.getInt("char_s");
-                    int end = results.getInt("char_e");
-                    AdvancedSearchResultSegment whole = new 
+                    double start = 0;
+                    double end = 1;
+                    if (USE_TLI) {
+                        start = results.getDouble("start_time") * 1000;
+                        if (results.wasNull()) {
+                            start = -1;
+                        }
+                        end = results.getDouble("end_time") * 1000;
+                        if (results.wasNull()) {
+                            end = -1;
+                        }
+                    } else {
+                        start = results.getInt("char_s");
+                        end = results.getInt("char_e");
+                    }
+                    AdvancedSearchResultSegment whole = new
                         AdvancedSearchResultSegment(searchString, start, end);
-                    List<AdvancedSearchResultSegment> highlights =
-                        AdvancedSearchResult.highlightSearch(whole, query);
+                    List<AdvancedSearchResultSegment> highlights;
+                    if (USE_TLI) {
+                        highlights =
+                            AdvancedSearchResult.highlightSegments(whole, query);
+                    } else {
+                        highlights =
+                            AdvancedSearchResult.highlightSearch(whole, query);
+                    }
                     // query subsegments then
-                    segStmt = prepareSegmentQuery(query, segment_id, 
+                    segStmt = prepareSegmentQuery(query, segment_id,
                             maximumRecords);
                     segStmt.setFetchSize(MAX_LAYERS);
                     segs = segStmt.executeQuery();
-                    AdvancedSearchResult rec = new 
+                    AdvancedSearchResult rec = new
                         AdvancedSearchResult(whole, highlights, source, pid,
                                 page, start, end);
                     List<AdvancedSearchResultSegment> segments =
                             new ArrayList<AdvancedSearchResultSegment>();
                     String segtype = "";
-                    int last_e = -1;
+                    double last_e = -1;
                     while (segs.next()) {
-                        String ann = 
+                        String ann =
                                 segs.getString("ex_annotation_segment.cdata");
                         String segtext = segs.getString("ex_segment.cdata");
                         String newtype = segs.getString("name");
-                        // FIXME: maybe tli_?
-                        int segstart = segs.getInt("ex_segment.char_s");
-                        int segend = segs.getInt("ex_segment.char_e");
+                        double segstart = 0;
+                        double segend = 1;
+                        if (USE_TLI) {
+                            segstart = segs.getDouble("start_time") * 1000;
+                            if (segs.wasNull()) {
+                                segstart = -1;
+                            }
+                            segend = segs.getDouble("end_time") * 1000;
+                            if (segs.wasNull()) {
+                                segend = -1;
+                            }
+                        } else {
+                            segstart = segs.getInt("ex_segment.char_s");
+                            segend = segs.getInt("ex_segment.char_e");
+                        }
                         if (segtype.equals("")) {
                             segtype = newtype;
-                        } else if (!newtype.equals(segtype) || 
+                        } else if (!newtype.equals(segtype) ||
                                 (segstart < last_e)) {
                             if (rec.getChildLayers().containsKey(segtype)) {
-                                List<AdvancedSearchResultSegment> ex_segments = 
+                                List<AdvancedSearchResultSegment> ex_segments =
                                     rec.getChildLayers().get(segtype);
                                 segments.addAll(ex_segments);
                                 Collections.sort(segments);
                             }
                             rec.addChildLayer(segtype, segments);
-                            segments = new 
+                            segments = new
                                 ArrayList<AdvancedSearchResultSegment>();
                             segtype = newtype;
                         }
@@ -242,7 +273,7 @@ public class SQLCorpusConnection {
                     }
                     if (!segtype.equals("")) {
                         if (rec.getChildLayers().containsKey(segtype)) {
-                            List<AdvancedSearchResultSegment> 
+                            List<AdvancedSearchResultSegment>
                                 ex_segments = rec.getChildLayers().get(segtype);
                             segments.addAll(ex_segments);
                             Collections.sort(segments);
@@ -259,8 +290,7 @@ public class SQLCorpusConnection {
             } else if (query.hasTextSearch() && (query.hasLemmaSearch() ||
                         query.hasPosSearch())) {
                 // find text then all hanging segments
-                // XXX: if looking for disfluencies change
-                prepStmt = prepareTextQuery(query, -1, true);
+                prepStmt = prepareTextQuery(query, -1);
                 prepStmt.setFetchSize(maximumRecords);
                 results = prepStmt.executeQuery();
                 int rsPos = 0;
@@ -271,49 +301,74 @@ public class SQLCorpusConnection {
                     String source = results.getString("name");
                     String pid = results.getString("file_url");
                     String page = results.getString("avail_url");
-                    // FIXME: maybe tli_?
-                    int start = results.getInt("char_s");
-                    int end = results.getInt("char_e");
-                    segStmt = prepareSegmentQuery(query, segment_id, 
+                    double start = 0;
+                    double end = 1;
+                    if (USE_TLI) {
+                        start = results.getDouble("start_time") * 1000;
+                        if (results.wasNull()) {
+                            start = -1;
+                        }
+                        end = results.getDouble("end_time") * 1000;
+                        if (results.wasNull()) {
+                            end = -1;
+                        }
+                    } else {
+                        start = results.getInt("char_s");
+                        end = results.getInt("char_e");
+                    }
+                    segStmt = prepareSegmentQuery(query, segment_id,
                             maximumRecords);
                     segStmt.setFetchSize(MAX_LAYERS);
                     segs = segStmt.executeQuery();
                     boolean hadSegments = false;
                     // find text match highlights
-                    AdvancedSearchResultSegment whole = new 
+                    AdvancedSearchResultSegment whole = new
                         AdvancedSearchResultSegment(searchString, start, end);
-                    List<AdvancedSearchResultSegment> highlights =
-                        AdvancedSearchResult.highlightSearch(whole, query);
+                    List<AdvancedSearchResultSegment> highlights;
+                    if (USE_TLI) {
+                        highlights =
+                            AdvancedSearchResult.highlightSegments(whole,
+                                    query);
+                    } else {
+                        highlights =
+                            AdvancedSearchResult.highlightSearch(whole, query);
+                    }
                     // see if segments that match
-                    AdvancedSearchResult rec = new 
+                    AdvancedSearchResult rec = new
                         AdvancedSearchResult(whole, highlights, source, pid,
                                 page, start, end);
                     List<AdvancedSearchResultSegment> segments =
                         new ArrayList<AdvancedSearchResultSegment>();
                     String segtype = "";
-                    int last_e = -1;
+                    double last_e = -1;
                     while (segs.next()) {
                         hadSegments = true;
-                        String ann = 
+                        String ann =
                             segs.getString("ex_annotation_segment.cdata");
                         String segtext = segs.getString("ex_segment.cdata");
                         String newtype = segs.getString("name");
-                        // FIXME: maybe tli_?
-                        int segstart = segs.getInt("ex_segment.char_s");
-                        int segend = segs.getInt("ex_segment.char_e");
+                        double segstart = 0;
+                        double segend = 1;
+                        if (USE_TLI) {
+                            segstart = segs.getInt("start_time");
+                            segend = segs.getInt("end_time");
+                        } else {
+                            segstart = segs.getInt("ex_segment.char_s");
+                            segend = segs.getInt("ex_segment.char_e");
+                        }
                         if (segtype.equals("")) {
                             segtype = newtype;
-                        } else if (!newtype.equals(segtype) || 
+                        } else if (!newtype.equals(segtype) ||
                                 (segstart < last_e)) {
                             if (rec.getChildLayers().containsKey(segtype)) {
-                                List<AdvancedSearchResultSegment> 
-                                    ex_segments = 
+                                List<AdvancedSearchResultSegment>
+                                    ex_segments =
                                     rec.getChildLayers().get(segtype);
                                 segments.addAll(ex_segments);
                                 Collections.sort(segments);
                             }
                             rec.addChildLayer(segtype, segments);
-                            segments = new 
+                            segments = new
                                 ArrayList<AdvancedSearchResultSegment>();
                             segtype = newtype;
                         }
@@ -326,8 +381,8 @@ public class SQLCorpusConnection {
                     }
                     else if (!segtype.equals("")) {
                         if (rec.getChildLayers().containsKey(segtype)) {
-                            List<AdvancedSearchResultSegment> 
-                                ex_segments = 
+                            List<AdvancedSearchResultSegment>
+                                ex_segments =
                                 rec.getChildLayers().get(segtype);
                             segments.addAll(ex_segments);
                             Collections.sort(segments);
@@ -353,13 +408,26 @@ public class SQLCorpusConnection {
                 Set<String> usedIds = new HashSet<String>();
                 while (segs.next()) {
                     int parentId = segs.getInt("parent");
-                    int matchstart = segs.getInt("char_s");
-                    int matchend = segs.getInt("char_e");
-                    String ann = 
+                    double matchstart = 0;
+                    double matchend = 1;
+                    if (USE_TLI) {
+                        matchstart = segs.getDouble("start_time") * 1000;
+                        if (segs.wasNull()) {
+                            matchstart = -1;
+                        }
+                        matchend = segs.getDouble("end_time") * 1000;
+                        if (segs.wasNull()) {
+                            matchend = -1;
+                        }
+                    } else {
+                        matchstart = segs.getInt("char_s");
+                        matchend = segs.getInt("char_e");
+                    }
+                    String ann =
                         segs.getString("ex_annotation_segment.cdata");
                     String segtext = segs.getString("ex_segment.cdata");
                     String segtype = segs.getString("name");
-                    prepStmt = prepareTextQuery(parentId, true);
+                    prepStmt = prepareTextQuery(parentId);
                     prepStmt.setFetchSize(2);
                     results = prepStmt.executeQuery();
                     if (!results.next()) {
@@ -372,24 +440,31 @@ public class SQLCorpusConnection {
                     String source = results.getString("name");
                     String pid = results.getString("file_url");
                     String page = results.getString("avail_url");
-                    int start = results.getInt("char_s");
-                    int end = results.getInt("char_e");
+                    double start = 0;
+                    double end = 1;
+                    if (USE_TLI) {
+                        start = results.getInt("start_time");
+                        end = results.getInt("end_time");
+                    } else {
+                        start = results.getInt("char_s");
+                        end = results.getInt("char_e");
+                    }
                     if (usedIds.contains(pid)) {
                         continue;
                     } else {
                         usedIds.add(pid);
                     }
-                    AdvancedSearchResultSegment whole = new 
+                    AdvancedSearchResultSegment whole = new
                         AdvancedSearchResultSegment(searchString, start, end);
                     // find all sub-segments that match advanced search?
                     //subsegStmt = prepareSegmentQuery(query, segment_id);
                     //subsegs = subsegStmt.executeQuery();
-                    if (rsPos >= startRecord && 
+                    if (rsPos >= startRecord &&
                             sr.getLength() < maximumRecords) {
                         // XXX: match highlight to search terms
                              List<AdvancedSearchResultSegment> highlights =
                         AdvancedSearchResult.highlightSegments(whole, query);
-                        AdvancedSearchResult rec = new 
+                        AdvancedSearchResult rec = new
                             AdvancedSearchResult(whole, highlights,
                                     source, pid, page, start, end);
                         // XXX: and add segements
@@ -403,6 +478,8 @@ public class SQLCorpusConnection {
             String sqlState = sqle.getSQLState();
             Logger.getLogger(SQLCorpusConnection.class.getName())
                 .log(Level.SEVERE, "ADV: SQL state:" + sqlState, sqle);
+            System.out.println("DEBUG: " + "ADV: SQL state:" + sqlState);
+            sqle.printStackTrace();
         } finally {
             if (this.conn != null) {
                 this.conn.close();
@@ -443,16 +520,20 @@ public class SQLCorpusConnection {
         }
     }
 
-    private PreparedStatement prepareTextQuery(int id, boolean utteranceWord)
+    private PreparedStatement prepareTextQuery(int id)
             throws SQLException {
         String searchSQL = "SELECT " +
             "segment_id, cdata, corpora.ex_segmented_transcription.name, " +
-            "avail_url, file_url, char_s, char_e " + 
+            "avail_url, file_url, char_s, char_e, tli_s, tli_e, " +
+            "tli1.time AS start_time, tli2.time AS end_time " +
             "FROM corpora.ex_segment INNER JOIN " +
             "corpora.ex_segmented_transcription ON " +
             "corpora.ex_segmented_transcription.transcription_guid = " +
-            "corpora.ex_segment.transcription_guid WHERE ";
-        if (utteranceWord) {
+            "corpora.ex_segment.transcription_guid " +
+            "JOIN corpora.ex_timeline_item AS tli1 ON tli1.tli_id = tli_s " +
+            "JOIN corpora.ex_timeline_item AS tli2 ON tli2.tli_id = tli_e " +
+            "WHERE ";
+        if (USE_UTTERANCE_WORD) {
             searchSQL += "corpora.ex_segment.name = 'HIAT:u' AND " +
                 "corpora.ex_segment.segmentation = 'SpeakerContribution_Utterance_Word'";
         } else {
@@ -471,16 +552,20 @@ public class SQLCorpusConnection {
         return prepStmt;
     }
 
-    private PreparedStatement prepareTextQuery(String search, int id, 
-            boolean utteranceWord) throws SQLException {
+    private PreparedStatement prepareTextQuery(String search, int id)
+        throws SQLException {
         String searchSQL = "SELECT " +
             "segment_id, cdata, corpora.ex_segmented_transcription.name, " +
-            "avail_url, file_url, char_s, char_e " + 
+            "avail_url, file_url, char_s, char_e, tli_s, tli_e, " +
+            "tli1.time AS start_time, tli2.time AS end_time " +
             "FROM corpora.ex_segment INNER JOIN " +
             "corpora.ex_segmented_transcription ON " +
             "corpora.ex_segmented_transcription.transcription_guid = " +
-            "corpora.ex_segment.transcription_guid WHERE ";
-        if (utteranceWord) {
+            "corpora.ex_segment.transcription_guid " +
+            "JOIN corpora.ex_timeline_item AS tli1 ON tli1.tli_id = tli_s " +
+            "JOIN corpora.ex_timeline_item AS tli2 ON tli2.tli_id = tli_e " +
+            "WHERE ";
+        if (USE_UTTERANCE_WORD) {
             searchSQL += "corpora.ex_segment.name = 'HIAT:u' AND " +
                 "corpora.ex_segment.segmentation = 'SpeakerContribution_Utterance_Word'";
         } else {
@@ -506,23 +591,27 @@ public class SQLCorpusConnection {
         return prepStmt;
     }
 
-    private PreparedStatement prepareTextQuery(HZSKQuery query, int id,
-            boolean utteranceWord) throws SQLException {
+    private PreparedStatement prepareTextQuery(HZSKQuery query, int id)
+        throws SQLException {
         String searchSQL = "SELECT " +
             "segment_id, cdata, corpora.ex_segmented_transcription.name, " +
-            "avail_url, file_url, char_s, char_e " + 
+            "avail_url, file_url, char_s, char_e, tli_s, tli_e, " +
+            "tli1.time AS start_time, tli2.time AS end_time " +
             "FROM corpora.ex_segment INNER JOIN " +
             "corpora.ex_segmented_transcription ON " +
             "corpora.ex_segmented_transcription.transcription_guid = " +
-            "corpora.ex_segment.transcription_guid WHERE ";
-        if (utteranceWord) {
+            "corpora.ex_segment.transcription_guid " +
+            "JOIN corpora.ex_timeline_item AS tli1 ON tli1.tli_id = tli_s " +
+            "JOIN corpora.ex_timeline_item AS tli2 ON tli2.tli_id = tli_e " +
+            "WHERE ";
+        if (USE_UTTERANCE_WORD) {
             searchSQL += "corpora.ex_segment.name = 'HIAT:u' AND " +
                 "corpora.ex_segment.segmentation = 'SpeakerContribution_Utterance_Word'";
         } else {
             searchSQL += "corpora.ex_segment.name = 'sc' AND " +
                 "corpora.ex_segment.segmentation = 'SpeakerContribution_Event'";
         }
-        String delim = "AND corpora.ex_segment.cdata LIKE ?";
+        String delim = " AND corpora.ex_segment.cdata LIKE ?";
         for (String s : query.getTextSearches()) {
             searchSQL += delim;
             if (query.getCombinator() == HZSKQuery.ComboType.WHATEVER) {
@@ -565,16 +654,22 @@ public class SQLCorpusConnection {
 
     private PreparedStatement prepareSegmentQuery(HZSKQuery query,
             int parentId, int limit) throws SQLException {
-        String segSQL = "SELECT ex_annotation_segment.cdata, " + 
+        String segSQL = "SELECT ex_annotation_segment.cdata, " +
             "ex_annotation_segment.name, ex_segment.cdata, " +
             "ex_segment.parent, " +
-            "ex_segment.char_s, ex_segment.char_e FROM " +
+            "ex_segment.char_s, ex_segment.char_e, " +
+            "ex_segment.tli_s, ex_segment.tli_e, " +
+            "tli1.time AS start_time, tli2.time AS end_time " +
+            " FROM " +
             "ex_annotation_segment JOIN " +
             "ex_segment_has_annotation ON " +
             "ex_segment_has_annotation.annotation_id = " +
             "ex_annotation_segment.annotation_id JOIN " +
             "ex_segment ON ex_segment_has_annotation.segment_id = " +
-            "ex_segment.segment_id WHERE ";
+            "ex_segment.segment_id " +
+            "JOIN corpora.ex_timeline_item AS tli1 ON tli1.tli_id = tli_s " +
+            "JOIN corpora.ex_timeline_item AS tli2 ON tli2.tli_id = tli_e " +
+            "WHERE ";
         String delim = "";
         if (query.hasPosSearch()) {
             for (String s : query.getPosSearches()) {
@@ -625,6 +720,7 @@ public class SQLCorpusConnection {
             segStmt.setInt(qvar, parentId);
             qvar++;
         }
+        System.out.println("DEBUG: segq SQL: " + segSQL + " ? = " + parentId);
         return segStmt;
     }
 }

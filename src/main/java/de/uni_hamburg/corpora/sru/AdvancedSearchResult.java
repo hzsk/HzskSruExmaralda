@@ -19,7 +19,7 @@ import java.net.URI;
  * Holds the text span containing the match, the segmented matches and all
  * the child layers with their segmentations. It is noteworthy that not all
  * matches to query can be set on timeline in a way that FCS needs; we cannot
- * deduce matches' position in time timeline if it doesn't coincide with 
+ * deduce matches' position in time timeline if it doesn't coincide with
  * existing segmentation point. The character position can always be used.
  * @author tpirinen
  */
@@ -37,8 +37,8 @@ public class AdvancedSearchResult {
     private String source;
     private String pid;
     private String page;
-    private int start;
-    private int end;
+    private double start;
+    private double end;
     private boolean valid = false;
 
 
@@ -51,7 +51,7 @@ public class AdvancedSearchResult {
     public AdvancedSearchResult(AdvancedSearchResultSegment whole,
             List<AdvancedSearchResultSegment> highlights,
             String source, String pid, String page,
-            int start, int end) {
+            double start, double end) {
         this.wholeText = whole;
         this.searchSplits = highlights;
         this.source = source;
@@ -59,17 +59,17 @@ public class AdvancedSearchResult {
         this.page = page;
         this.start = start;
         this.end = end;
-        this.childLayers = new HashMap<String, 
+        this.childLayers = new HashMap<String,
                  List<AdvancedSearchResultSegment>>();
         valid = true;
     }
 
-    public void addChildLayer(String name, 
+    public void addChildLayer(String name,
             List<AdvancedSearchResultSegment> segments) {
         childLayers.put(name, segments);
     }
 
-    public Map<String, List<AdvancedSearchResultSegment>> 
+    public Map<String, List<AdvancedSearchResultSegment>>
            getChildLayers() {
         return childLayers;
     }
@@ -106,11 +106,11 @@ public class AdvancedSearchResult {
         return page;
     }
 
-    public int getStart() {
+    public double getStart() {
         return wholeText.getStart();
     }
 
-    public int getEnd() {
+    public double getEnd() {
         return wholeText.getEnd();
     }
 
@@ -177,17 +177,17 @@ public class AdvancedSearchResult {
         matcher.reset();
         while (matcher.find()) {
             if (previousEnd < matcher.start()) {
-                AdvancedSearchResultSegment left = new 
+                AdvancedSearchResultSegment left = new
                     AdvancedSearchResultSegment(fulltext.substring(previousEnd,
-                                matcher.start()), text.getStart() + previousEnd,
-                                text.getStart() + previousEnd + 
-                                (matcher.start() - previousEnd));
+                            matcher.start()), text.getStart() + previousEnd,
+                            text.getStart() + previousEnd +
+                            (matcher.start() - previousEnd));
                 highlights.add(left);
             }
             AdvancedSearchResultSegment hit = new AdvancedSearchResultSegment(
                 fulltext.substring(matcher.start(), matcher.end()),
                     text.getStart() + matcher.start(),
-                    text.getStart() + matcher.start() + 
+                    text.getStart() + matcher.start() +
                     (matcher.end() - matcher.start()));
             hit.setHighlighted(true);
             highlights.add(hit);
@@ -195,7 +195,7 @@ public class AdvancedSearchResult {
         }
         if (previousEnd < fulltext.length()) {
             AdvancedSearchResultSegment right = new AdvancedSearchResultSegment(
-                    fulltext.substring(previousEnd), 
+                    fulltext.substring(previousEnd),
                     text.getStart() + previousEnd, text.getEnd());
             highlights.add(right);
         }
