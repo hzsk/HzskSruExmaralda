@@ -43,7 +43,7 @@
         <url-pattern>/</url-pattern>
     </servlet-mapping>
     <resource-ref>
-        <description>The HZSK sandboxed Ham attack</description>
+        <description>The HZSK SQL corpora</description>
         <res-ref-name>jdbc/corpora</res-ref-name>
         <res-type>javax.sql.DataSource</res-type>
         <res-auth>Container</res-auth>

@@ -260,22 +260,24 @@ public class HZSKSRUSearchResultSet extends SRUSearchResultSet {
                     previousSegments = segment;
                 }
             }
-            if ((previousSegments.getStart() > 0) &&
-                    (previousSegments.getEnd() > 0)) {
-                if (name.equals("pos") || (name.equals("pos-sup"))) {
-                   helper.addSpan(layer,
-                            Math.round(previousSegments.getStart()),
-                            Math.round(previousSegments.getEnd()),
-                            STTS2UDConverter.fromSTTS(
-                                previousSegments.getAnnotation()),
-                            previousSegments.getAnnotation());
-                } else {
-                    helper.addSpan(layer,
-                            Math.round(previousSegments.getStart()),
-                            Math.round(previousSegments.getEnd()),
-                            previousSegments.getAnnotation());
-                }
-           }
+            if (previousSegments != null) {
+                    if ((previousSegments.getStart() > 0) &&
+                        (previousSegments.getEnd() > 0)) {
+                    if (name.equals("pos") || (name.equals("pos-sup"))) {
+                       helper.addSpan(layer,
+                                Math.round(previousSegments.getStart()),
+                                Math.round(previousSegments.getEnd()),
+                                STTS2UDConverter.fromSTTS(
+                                    previousSegments.getAnnotation()),
+                                previousSegments.getAnnotation());
+                    } else {
+                        helper.addSpan(layer,
+                                Math.round(previousSegments.getStart()),
+                                Math.round(previousSegments.getEnd()),
+                                previousSegments.getAnnotation());
+                    }
+               }
+            }
         }
         System.out.println("DEBUG3: writing XML at " + pos);
         helper.writeHitsDataView(writer, layerId);

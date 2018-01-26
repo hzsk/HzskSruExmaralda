@@ -62,8 +62,8 @@
     <!-- HZSK/ren/metadata/cmdi/ -->
     <ed:Resource pid="http://hdl.handle.net/11022/0000-0007-C2FA-4">
       <ed:Title xml:lang="deu">Referenzkorpus Mittelniederdeutsch/Niederrheinisch (1200-1650)</ed:Title>
-      <ed:Title xml:lang="eng">Reference Corpus Middle Low German/Low Rhenish (1200-1650)</ed:Title>
-      <ed:Description xml:lang="eng">The reference corpus of Middle Low German
+      <ed:Title xml:lang="en">Reference Corpus Middle Low German/Low Rhenish (1200-1650)</ed:Title>
+      <ed:Description xml:lang="en">The reference corpus of Middle Low German
           and Low Rhenish texts is based on manuscripts, prints and
           inscriptions. It is intended to provide an insight into the culture
           of speech and writing in Middle Low German and Low Rhenish regions.
@@ -96,8 +96,8 @@
     </ed:Resource>
     <!-- SFB-632/a5.hausa.news/cmdi -->
     <ed:Resource pid="http://hdl.handle.net/11022/0000-0000-82AC-B">
-      <ed:Title xml:lang="en-US">A5 Hausa News</ed:Title>
-      <ed:Description xml:lang="en-US">This corpus of news articles from the
+      <ed:Title xml:lang="en">A5 Hausa News</ed:Title>
+      <ed:Description xml:lang="en">This corpus of news articles from the
         online news service of Deutsche Welle contains 4 texts with a total of
         2017 tokens.</ed:Description>
       <ed:Languages>
@@ -108,8 +108,8 @@
     </ed:Resource>
       <!-- SFB-632/a5.hausa.umarnin.uwa/cmdi -->
     <ed:Resource pid="http://hdl.handle.net/11022/0000-0000-82AD-A">
-      <ed:Title xml:lang="en-US">A5 Hausa Umarnin Uwa</ed:Title>
-      <ed:Description xml:lang="en-US">This corpus of Umarnin Uwa film
+      <ed:Title xml:lang="en">A5 Hausa Umarnin Uwa</ed:Title>
+      <ed:Description xml:lang="en">This corpus of Umarnin Uwa film
         transcripts contains 47 transcripts with a total of 10194 tokens. It
         provides information including automatic POS tagging, speaker and
         extralinguistic information, foreign words and
@@ -122,8 +122,8 @@
     </ed:Resource>
       <!-- SFB-632/b1.aja/cmdi -->
     <ed:Resource pid="http://hdl.handle.net/11022/0000-0000-9B1C-3">
-      <ed:Title xml:lang="en-US">B1 Aja</ed:Title>
-      <ed:Description xml:lang="en-US">The data sets for each language consist of
+      <ed:Title xml:lang="en">B1 Aja</ed:Title>
+      <ed:Description xml:lang="en">The data sets for each language consist of
         a small number of mini-dialogues, chosen out of the 189 entries within
         the Focus Translation Task (cf. Skopeteas et al. 2006: 209ff.) in order
         to get a basic set of utterances for comparison between the languages
@@ -136,8 +136,8 @@
     </ed:Resource>
       <!-- SFB-632/b1.fon/cmdi -->
     <ed:Resource pid="http://hdl.handle.net/11022/0000-0000-9B2C-1">
-      <ed:Title xml:lang="en-US">B1 Fon</ed:Title>
-      <ed:Description xml:lang="en-US">The data sets for each language consist of
+      <ed:Title xml:lang="en">B1 Fon</ed:Title>
+      <ed:Description xml:lang="en">The data sets for each language consist of
         a small number of mini-dialogues, chosen out of the 189 entries within
         the Focus Translation Task (cf. Skopeteas et al. 2006: 209ff.) in order
         to get a basic set of utterances for comparison between the languages
@@ -150,8 +150,8 @@
     </ed:Resource>
     <!-- SFB-632/b1.foodo/cmdi/ -->
     <ed:Resource pid="http://hdl.handle.net/11022/0000-0000-9B2B-2">
-      <ed:Title xml:lang="en-US">B1 Foodo</ed:Title>
-      <ed:Description xml:lang="en-US">The data sets for each language consist of
+      <ed:Title xml:lang="en">B1 Foodo</ed:Title>
+      <ed:Description xml:lang="en">The data sets for each language consist of
         a small number of mini-dialogues, chosen out of the 189 entries within
         the Focus Translation Task (cf. Skopeteas et al. 2006: 209ff.) in order
         to get a basic set of utterances for comparison between the languages
@@ -164,8 +164,8 @@
     </ed:Resource>
     <!-- SFB-632/b1.yom/cmdi/ -->
     <ed:Resource pid="http://hdl.handle.net/11022/0000-0000-9B2A-3">
-      <ed:Title xml:lang="en-US">B1 Yom</ed:Title>
-      <ed:Description xml:lang="en-US">The data sets for each language consist of
+      <ed:Title xml:lang="en">B1 Yom</ed:Title>
+      <ed:Description xml:lang="en">The data sets for each language consist of
         a small number of mini-dialogues, chosen out of the 189 entries within
         the Focus Translation Task (cf. Skopeteas et al. 2006: 209ff.) in order
         to get a basic set of utterances for comparison between the languages
@@ -178,8 +178,8 @@
     </ed:Resource>
     <!-- SFB-632/b2.bura/cmdi/ -->
     <ed:Resource pid="http://hdl.handle.net/11022/0000-0000-9B29-4">
-      <ed:Title xml:lang="en-US">B2 Bura</ed:Title>
-      <ed:Description xml:lang="en-US">Full set: all focus related experiments,
+      <ed:Title xml:lang="en">B2 Bura</ed:Title>
+      <ed:Description xml:lang="en">Full set: all focus related experiments,
         status: work in progress, large parts elicited, most of the data
         transcribed, partly annotated</ed:Description>
       <ed:Languages>
@@ -190,8 +190,8 @@
     </ed:Resource>
     <!-- SFB-632/b2.guruntum/cmdi/ -->
     <ed:Resource pid="http://hdl.handle.net/11022/0000-0000-9B28-5">
-      <ed:Title xml:lang="en-US">B2 Guruntum</ed:Title>
-      <ed:Description xml:lang="en-US">Guruntum sample: sample, status: final,
+      <ed:Title xml:lang="en">B2 Guruntum</ed:Title>
+      <ed:Description xml:lang="en">Guruntum sample: sample, status: final,
         manually transcribed, glossed and translated to English, annotated wrt.
         morphology, parts of speech, syntax, gramm. function, sem. roles, focus
         and focus position (e.g. ex situ) in EXMARaLDA.</ed:Description>
@@ -203,8 +203,8 @@
     </ed:Resource>
     <!-- SFB-632/b2.guruntum/cmdi/ -->
     <ed:Resource pid="http://hdl.handle.net/11022/0000-0000-9B27-6">
-      <ed:Title xml:lang="en-US">B2 Hausa</ed:Title>
-      <ed:Description xml:lang="en-US">Hausa:  complete set, status: final,
+      <ed:Title xml:lang="en">B2 Hausa</ed:Title>
+      <ed:Description xml:lang="en">Hausa:  complete set, status: final,
         manually transcribed, glossed and translated to English, annotated wrt.
         morphology, parts of speech, syntax, gramm. function, sem. roles, focus
         and focus position (e.g. ex situ) in EXMARaLDA.</ed:Description>
@@ -216,8 +216,8 @@
     </ed:Resource>
     <!-- SFB-632/b2.marghi/cmdi/ -->
     <ed:Resource pid="http://hdl.handle.net/11022/0000-0000-9B26-7">
-      <ed:Title xml:lang="en-US">B2 Marghi</ed:Title>
-      <ed:Description xml:lang="en-US">Full set: all focus related experiments,
+      <ed:Title xml:lang="en">B2 Marghi</ed:Title>
+      <ed:Description xml:lang="en">Full set: all focus related experiments,
         status: work in progress, large parts elicited, most of the data
         transcribed, partly annotated.</ed:Description>
       <ed:Languages>
@@ -228,8 +228,8 @@
     </ed:Resource>
     <!-- SFB-632/b2.tangale/cmdi/ -->
     <ed:Resource pid="http://hdl.handle.net/11022/0000-0000-9B25-8">
-      <ed:Title xml:lang="en-US">B2 Tangale</ed:Title>
-      <ed:Description xml:lang="en-US">Tangale sample: sample, status: final,
+      <ed:Title xml:lang="en">B2 Tangale</ed:Title>
+      <ed:Description xml:lang="en">Tangale sample: sample, status: final,
         manually transcribed, glossed and translated to English, annotated wrt.
         morphology, parts of speech, syntax, gramm. function, sem. roles, focus
         and focus position (e.g. ex situ) in EXMARaLDA.</ed:Description>
@@ -241,8 +241,8 @@
     </ed:Resource>
     <!-- SFB-632/b4.heliand/cmdi/ -->
     <ed:Resource pid="http://hdl.handle.net/11022/0000-0000-9B24-9">
-      <ed:Title xml:lang="en-US">B4 Heliand</ed:Title>
-      <ed:Description xml:lang="en-US">Heliand 1, 4 and 5: complete text, status:
+      <ed:Title xml:lang="en">B4 Heliand</ed:Title>
+      <ed:Description xml:lang="en">Heliand 1, 4 and 5: complete text, status:
         final, digitalization, translation to Modern German, manually annotated
         with parts of speech, syntactic categories, grammatical functions, clause
         status, numbers of syllables (per constituent), alliteration, information
@@ -257,8 +257,8 @@
     </ed:Resource>
     <!-- SFB-632/b4.hipkon/cmdi/ -->
     <ed:Resource pid="http://hdl.handle.net/11022/0000-0000-9B23-A">
-      <ed:Title xml:lang="en-US">B4 Historisches Predigtenkorpus zum Nachfeld</ed:Title>
-      <ed:Description xml:lang="en-US">HIPKON is the first corpus based on only
+      <ed:Title xml:lang="en">B4 Historisches Predigtenkorpus zum Nachfeld</ed:Title>
+      <ed:Description xml:lang="en">HIPKON is the first corpus based on only
         one text type (sermons) and on one dialect area, Upper German
         (Bavarian-Alemannic). The sermons cover the time from Middle High German
         to the beginning of the New High German period. They were accurately
@@ -283,8 +283,8 @@
     </ed:Resource>
     <!-- SFB-632/b4.ludolf/cmdi/ -->
     <ed:Resource pid="http://hdl.handle.net/11022/0000-0000-9B22-B">
-      <ed:Title xml:lang="en-US">B4 Ludolf</ed:Title>
-      <ed:Description xml:lang="en-US">The texts of this corpus, Ludolf von
+      <ed:Title xml:lang="en">B4 Ludolf</ed:Title>
+      <ed:Description xml:lang="en">The texts of this corpus, Ludolf von
         Sudheims Reise ins Heilige Land (Ludolf of Sudheim’s Journey to the
         Holy Land), is a journey diary describing the adventures of a group of
         pilgrims, written in Middle Low German and dated back to 1350. For
@@ -301,8 +301,8 @@
     </ed:Resource>
     <!-- SFB-632/b4.muspilli/cmdi/ -->
     <ed:Resource pid="http://hdl.handle.net/11022/0000-0000-9B21-C">
-      <ed:Title xml:lang="en-US">B4 Muspilli</ed:Title>
-      <ed:Description xml:lang="en-US">Complete text, status: work in progress,
+      <ed:Title xml:lang="en">B4 Muspilli</ed:Title>
+      <ed:Description xml:lang="en">Complete text, status: work in progress,
         digitalization, translation to English, manually annotated with parts
         of speech, syntactic category, grammatical function, clause status,
         numbers of syllables (per constituent), information status,
@@ -317,7 +317,7 @@
     </ed:Resource>
     <!-- SFB-632/b4.otfrid/cmdi/ -->
     <ed:Resource pid="http://hdl.handle.net/11022/0000-0000-9B20-D">
-      <ed:Title xml:lang="en-US">B4 Otfrid</ed:Title>
+      <ed:Title xml:lang="en">B4 Otfrid</ed:Title>
       <ed:Description xml:lang="de-DE">Das Referenzkorpus Altdeutsch erfasst
         und annotiert die ältesten Sprachdenkmäler des Deutschen vom Beginn der
         kontinuierlichen schriftlichen Überlieferung um 750 bis etwa 1050 mit
@@ -334,7 +334,7 @@
         und zum Altsächsischen erzeugt wurde. Die verschiedenen Stufen der
         Annotation werden in Form einer Mehrebenenarchitektur aufeinander
         bezogen.</ed:Description>
-      <ed:Description xml:lang="en-US">The reference corpus Old German contains
+      <ed:Description xml:lang="en">The reference corpus Old German contains
         (annotated) data from the oldest language monuments of German before
         the continuous written transduction around 750 until 1050 with approx.
         650,000 text words.</ed:Description>
@@ -346,8 +346,8 @@
     </ed:Resource>
     <!-- SFB-632/b4.saechsische.weltchronik/cmdi/ -->
     <ed:Resource pid="http://hdl.handle.net/11022/0000-0000-9B1F-0">
-      <ed:Title xml:lang="en-US">B4 Sächsische Weltchronik</ed:Title>
-      <ed:Description xml:lang="en-US">The corpus contains a chronic from the
+      <ed:Title xml:lang="en">B4 Sächsische Weltchronik</ed:Title>
+      <ed:Description xml:lang="en">The corpus contains a chronic from the
         13th century in Middle Low German.</ed:Description>
       <ed:Description xml:lang="de-DE">Es handelt sich um eine Chronik, in
         Mittelniederdeutsch, 13 Jh. Beschreibung der Textzeugen usw. in:
@@ -367,8 +367,8 @@
     </ed:Resource>
     <!-- SFB-632/b4.tatian/cmdi/ -->
     <ed:Resource pid="http://hdl.handle.net/11022/0000-0000-9B1E-1">
-      <ed:Title xml:lang="en-US">B4 Tatian Corpus of Deviating Examples 2.1</ed:Title>
-      <ed:Description xml:lang="en-US">The present corpus, the Tatian Corpus of
+      <ed:Title xml:lang="en">B4 Tatian Corpus of Deviating Examples 2.1</ed:Title>
+      <ed:Description xml:lang="en">The present corpus, the Tatian Corpus of
         Deviating Examples T-CODEX 2.1, provides morpho-syntactic and information
         structural annotation of parts of the Old High German translation
         attested in the MS St. Gallen Cod. 56, traditionally called the OHG
@@ -398,8 +398,8 @@
     </ed:Resource>
     <!-- SFB-632/b7.wolof.web/cmdi/ -->
     <ed:Resource pid="http://hdl.handle.net/11022/0000-0000-9B1D-2">
-      <ed:Title xml:lang="en-US">B7 Wolof (web)</ed:Title>
-      <ed:Description xml:lang="en-US">The corpus comprises out of a collection
+      <ed:Title xml:lang="en">B7 Wolof (web)</ed:Title>
+      <ed:Description xml:lang="en">The corpus comprises out of a collection
         of texts from discussion forums in the web, randomly chosen for their
         near-standard like orthography and language, and treating different
         topics. The texts are translated manually by a mother tongue speaker and
@@ -413,8 +413,8 @@
     </ed:Resource>
     <!-- SFB-632/b7.wolof.wiki/cmdi/ -->
     <ed:Resource pid="http://hdl.handle.net/11022/0000-0000-9B2D-0">
-      <ed:Title xml:lang="en-US">B7 Wolof (Wikipedia)</ed:Title>
-      <ed:Description xml:lang="en-US">The corpus comprises out of a collection
+      <ed:Title xml:lang="en">B7 Wolof (Wikipedia)</ed:Title>
+      <ed:Description xml:lang="en">The corpus comprises out of a collection
         of texts from the Wolof Wikipedia, randomly chosen for their
         near-standard like orthography and language, and treating different
         topics. The texts are translated manually by a mother tongue speaker and

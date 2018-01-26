@@ -42,8 +42,44 @@ public class AnnisConnection {
     public class SortAnnisIDComparator implements Comparator<String> {
         @Override
         public int compare(String lhs, String rhs) {
-            Integer lhsID = Integer.parseInt(lhs.substring(4));
-            Integer rhsID = Integer.parseInt(rhs.substring(4));
+            int firstdigit = -1;
+            for (int i = 0; i < lhs.length(); i++) {
+                if (Character.isDigit(lhs.charAt(i))) {
+                    firstdigit = i;
+                    break;
+                }
+            }
+            int lastdigit = -1;
+            for (int j = firstdigit; j < lhs.length(); j++) {
+                if (!Character.isDigit(lhs.charAt(j))) {
+                    lastdigit = j;
+                    break;
+                }
+            }
+            if (lastdigit == -1) {
+                lastdigit = lhs.length();
+            }
+            System.out.println("DEBUG: " + firstdigit + ", " + lastdigit +
+                    " in " +                    lhs);
+            Integer lhsID = Integer.parseInt(lhs.substring(firstdigit,
+                    lastdigit));
+            for (int i = 0; i < rhs.length(); i++) {
+                if (Character.isDigit(rhs.charAt(i))) {
+                    firstdigit = i;
+                    break;
+                }
+            }
+            for (int j = firstdigit; j < rhs.length(); j++) {
+                if (!Character.isDigit(rhs.charAt(j))) {
+                    lastdigit = j;
+                    break;
+                }
+            }
+            if (lastdigit == -1) {
+                lastdigit = rhs.length();
+            }
+            Integer rhsID = Integer.parseInt(rhs.substring(firstdigit,
+                    lastdigit));
             return lhsID.compareTo(rhsID);
         }
     }
@@ -51,8 +87,48 @@ public class AnnisConnection {
     // hardcoded now...
     static final String ANNIS_URL_PREFIX="http://localhost:5711";
     static final String
-        ANNIS_GUI_PREFIX="http://localhost:8080/annis-gui-3.4.3/";
+        ANNIS_GUI_PREFIX="http://localhost:8080/gui/";
 
+    /** Maps PID handles to annis internal names.
+     *  PIDs are required by some FCS stuff and quite handy. Some future version
+     *  might query stuff directly.
+     */
+    static final Map<String, String>PID2NAME;
+    static {
+        PID2NAME = new HashMap<String, String>();
+        PID2NAME.put("http://hdl.handle.net/11022/0000-0007-C2FA-4", "ReN_2017-09-05");
+        PID2NAME.put("http://hdl.handle.net/11022/0000-0000-82AC-B", "a5.hausa.news");
+        PID2NAME.put("http://hdl.handle.net/11022/0000-0000-82AD-A",
+                "a5.hausa.umarnin.uwa_V2");
+        PID2NAME.put("http://hdl.handle.net/11022/0000-0000-9B1C-3", "b1.aja");
+        PID2NAME.put("http://hdl.handle.net/11022/0000-0000-9B2C-1", "b1.fon");
+        PID2NAME.put("http://hdl.handle.net/11022/0000-0000-9B2B-2", "b1.foodo");
+        PID2NAME.put("http://hdl.handle.net/11022/0000-0000-9B2A-3", "b1.yom");
+        PID2NAME.put("http://hdl.handle.net/11022/0000-0000-9B29-4", "b2.bura");
+        PID2NAME.put("http://hdl.handle.net/11022/0000-0000-9B28-5", "b2.guruntum");
+        PID2NAME.put("http://hdl.handle.net/11022/0000-0000-9B27-6", "b2.hausa");
+        PID2NAME.put("http://hdl.handle.net/11022/0000-0000-9B26-7", "b2.marghi");
+        PID2NAME.put("http://hdl.handle.net/11022/0000-0000-9B25-8", "b2.tangale");
+        PID2NAME.put("http://hdl.handle.net/11022/0000-0000-9B24-9", "b4.heliand");
+        PID2NAME.put("http://hdl.handle.net/11022/0000-0000-9B23-A", "b4.HIPKON");
+        PID2NAME.put("http://hdl.handle.net/11022/0000-0000-9B22-B", "b4.ludolf");
+        PID2NAME.put("http://hdl.handle.net/11022/0000-0000-9B21-C", "b4.muspilli");
+        PID2NAME.put("http://hdl.handle.net/11022/0000-0000-9B20-D", "b4.otfrid");
+        PID2NAME.put("http://hdl.handle.net/11022/0000-0000-9B1F-0",
+                "b4.saechsiche_weltchronik");
+        PID2NAME.put("http://hdl.handle.net/11022/0000-0000-9B1E-1", "b4.tatian");
+        PID2NAME.put("http://hdl.handle.net/11022/0000-0000-9B1D-2", "b7.wolof.web");
+        PID2NAME.put("http://hdl.handle.net/11022/0000-0000-9B2D-0", "b7.wolof.wiki");
+    }
+    /** the corpora that are available to FCS user.
+     * We cannot use * because, even when there are no RES corpora, FCS user
+     * does not have the right to search archived corpora.
+     */
+    static final String ALL_CORPORA =
+        "ReN_2017-09-05,a5.hausa.news,a5.hausa.umarnin.uwa_V2,b1.aja,b1.fon," +
+        "b1.foodo,b1.yom,b2.bura,b2.guruntum,b2.hausa,b2.marghi,b2.tangale," +
+        "b4.heliand,b4.HIPKON,b4.ludolf,b4.muspilli,b4.otfrid," +
+        "b4.saechsiche_weltchronik,b4.tatian,b7.wolof.web,b7.wolof.wiki";
 
     /** "Creates" a connection to our annis server.
      * Doesn't actually do anything with network since it's lightweight http
@@ -82,7 +158,8 @@ public class AnnisConnection {
                 URL countURL = new URL(ANNIS_URL_PREFIX +
                         "/annis/query/search/count?q=" +
                         prepareTextQuery(query) +
-                        "&corpora=pcc2");
+                        "&corpora=" +
+                        ALL_CORPORA);
                 Document countDoc = getDocumentFromURL(countURL);
                 NodeList countElements =
                     countDoc.getElementsByTagName("matchAndDocumentCount");
@@ -123,7 +200,8 @@ public class AnnisConnection {
                 URL queryURL = new URL(ANNIS_URL_PREFIX +
                         "/annis/query/search/find?q=" +
                         prepareTextQuery(query) +
-                        "&corpora=pcc2");
+                        "&corpora=" +
+                        ALL_CORPORA);
                 Document queryDoc = getDocumentFromURL(queryURL);
                 NodeList matchgroups = queryDoc.getChildNodes();
                 List<String> matchIds = new ArrayList<String>();

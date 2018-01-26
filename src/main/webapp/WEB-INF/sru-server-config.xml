@@ -1,14 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <endpoint-config xmlns="http://www.clarin.eu/sru-server/1.0/">
     <databaseInfo>
-        <title xml:lang="de">The Hamburg MapTask Corpus (HAMATAC) [DEBUG: xml+de]</title>
-        <title xml:lang="en" primary="true">The Hamburg MapTask Corpus (HAMATAC) [DEBUG: xml+en]</title>
-        <description xml:lang="de">Suche im Hamburg MapTask Corpus (HAMATAC) via SRU.</description>
-        <description xml:lang="en" primary="true">Search the Hamburg MapTask Corpus (HAMATAC) via SRU.</description>
+        <title xml:lang="de" primary="true">Hamburger Zentrum für Sprachkorpora</title>
+        <title xml:lang="en">Hamburg Centre for Language Corpora</title>
+        <title xml:lang="fi">Hamburin korpuskeskus</title>
+        <description xml:lang="de">
+          Suche im Hamburg Zentrum für Sprachkorpora (HZSK) via SRU.
+          Diese endpoint sucht Korpora aus ANNIS.
+        </description>
+        <description xml:lang="en" primary="true">
+          Search the Hamburg Centre for Language Corpora (HZSK) via SRU.
+          This end-point is for corpora hosted on ANNIS platform.
+        </description>
+        <description xml:lang="fi">
+          Hae Hampurin korpuskeskuksesta (HZSK:sta) SRU:lla.
+          Tämä endpoint on ANNIS-korpusten hakuja varten.
+        </description>
         <author xml:lang="en">Hamburg Centre for Language Corpora</author>
         <author xml:lang="de" primary="true">Hamburger Zentrum für Sprachkorpora</author>
+        <author xml:lang="fi">Hampurin korpuskeskus</author>
     </databaseInfo>
-    
+
     <indexInfo>
         <set name="fcs" identifier="clarin.eu/fcs/resource">
             <title xml:lang="de">CLARIN Content Search</title>
@@ -21,7 +33,7 @@
             </map>
         </index>
     </indexInfo>
-    
+
     <schemaInfo>
         <schema identifier="http://clarin.eu/fcs/resource" name="fcs"
                 sort="false" retrieve="true">
