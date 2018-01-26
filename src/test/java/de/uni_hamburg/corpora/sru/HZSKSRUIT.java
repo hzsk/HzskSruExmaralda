@@ -74,7 +74,7 @@ public class HZSKSRUIT {
                         .unknownDataViewAsString()
                         .buildClient();
         // XXX: change to deployment target
-        this.host = "http://localhost:8080/HZSKsru";
+        this.host = "http://corpora.uni-hamburg.de:8080/HZSKsru";
     }
 
 
@@ -121,7 +121,7 @@ public class HZSKSRUIT {
                 response.hasDiagnostics(), is(false));
         assertNotNull("FAIL: search retrieve should have results",
                 response.getRecords());
-        assertThat("FAIL: we should have more than five" + 
+        assertThat("FAIL: we should have more than five" +
                 "(fix test if we don't)",
                 response.getRecords().size(), is(greaterThan(5)));
     }
@@ -140,11 +140,11 @@ public class HZSKSRUIT {
                 response.hasDiagnostics(), is(false));
         assertNotNull("FAIL: search retrieve should have results",
                 response.getRecords());
-        assertThat("FAIL: we should have more than five" + 
+        assertThat("FAIL: we should have more than five" +
                 "(fix test if we don't)",
                 response.getRecords().size(), is(greaterThan(5)));
     }
-    
+
     @Test
     public void searchRetrieveMaxFive() throws SRUClientException {
         String query = "Käse";
@@ -184,7 +184,7 @@ public class HZSKSRUIT {
                 response.hasDiagnostics(), is(false));
         assertNotNull("FAIL: search retrieve should have results",
                 response.getRecords());
-        assertThat("FAIL: we should have more than five" + 
+        assertThat("FAIL: we should have more than five" +
                 "(fix test if we don't)",
                 response.getRecords().size(), is(greaterThan(5)));
     }
@@ -209,7 +209,7 @@ public class HZSKSRUIT {
                 response.hasDiagnostics(), is(false));
         assertNotNull("FAIL: search retrieve should have results",
                 response.getRecords());
-        assertThat("FAIL: we should have more than five" + 
+        assertThat("FAIL: we should have more than five" +
                 "(fix test if we don't)",
                 response.getRecords().size(), is(greaterThan(5)));
     }
@@ -233,11 +233,11 @@ public class HZSKSRUIT {
                 response.hasDiagnostics(), is(false));
         assertNotNull("FAIL: search retrieve should have results",
                 response.getRecords());
-        assertThat("FAIL: we should have more than five" + 
+        assertThat("FAIL: we should have more than five" +
                 "(fix test if we don't)",
                 response.getRecords().size(), is(greaterThan(5)));
     }
-    
+
     @Test
     public void searchRetrieveLemmaAndText() throws SRUClientException {
         String query = "'Käse' [lemma = 'Käse']";
@@ -258,24 +258,24 @@ public class HZSKSRUIT {
                 response.hasDiagnostics(), is(false));
         assertNotNull("FAIL: search retrieve should have results",
                 response.getRecords());
-        assertThat("FAIL: we should have more than five" + 
+        assertThat("FAIL: we should have more than five" +
                 "(fix test if we don't)",
                 response.getRecords().size(), is(greaterThan(5)));
     }
 
-    @Test
+/*    @Test
     public void searchAnnisPcc2() throws SRUClientException {
         String query = "wollen";
         SRUSearchRetrieveRequest request = new
-            SRUSearchRetrieveRequest(host);
-        request.setQuery("fcs" /*SRUClientConstants.QUERY_TYPE_CQL*/,
+            SRUSearchRetrieveRequest(host2);
+        request.setQuery("fcs" / *SRUClientConstants.QUERY_TYPE_CQL* /,
                 query);
         request.setRecordXmlEscaping(SRURecordXmlEscaping.XML);
         request.setRecordPacking(SRURecordPacking.PACKED);
         SRUSearchRetrieveResponse response = client.searchRetrieve(request);
         if (response.hasDiagnostics()) {
             for (SRUDiagnostic diag : response.getDiagnostics()) {
-                System.out.println("DIAGNOSTIC:"  + diag.getMessage() + 
+                System.out.println("DIAGNOSTIC:"  + diag.getMessage() +
                         "\n  details:" + diag.getDetails());
             }
         }
@@ -283,8 +283,9 @@ public class HZSKSRUIT {
                 response.hasDiagnostics(), is(false));
         assertNotNull("FAIL: search retrieve should have results",
                 response.getRecords());
-        assertThat("FAIL: we should have more than zero" + 
+        assertThat("FAIL: we should have more than zero" +
                 "(fix test if we don't)",
                 response.getRecords().size(), is(greaterThan(0)));
     }
-} // 
+                */
+} //
