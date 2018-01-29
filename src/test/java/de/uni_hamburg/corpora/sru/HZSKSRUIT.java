@@ -66,6 +66,7 @@ public class HZSKSRUIT {
 
     SRUClient client;
     String host;
+    String annishost;
 
     @Before
     public void setUp() {
@@ -75,6 +76,7 @@ public class HZSKSRUIT {
                         .buildClient();
         // XXX: change to deployment target
         this.host = "http://corpora.uni-hamburg.de:8080/HZSKsru";
+        this.annishost = "http://annis.corpora.uni-hamburg.de:8080/HZSKsru";
     }
 
 
@@ -263,13 +265,13 @@ public class HZSKSRUIT {
                 response.getRecords().size(), is(greaterThan(5)));
     }
 
-/*    @Test
-    public void searchAnnisPcc2() throws SRUClientException {
-        String query = "wollen";
+    @Test
+    public void searchAnnis() throws SRUClientException {
+        // ReN
+        String query = "klagent";
         SRUSearchRetrieveRequest request = new
-            SRUSearchRetrieveRequest(host2);
-        request.setQuery("fcs" / *SRUClientConstants.QUERY_TYPE_CQL* /,
-                query);
+            SRUSearchRetrieveRequest(annishost);
+        request.setQuery("fcs", query);
         request.setRecordXmlEscaping(SRURecordXmlEscaping.XML);
         request.setRecordPacking(SRURecordPacking.PACKED);
         SRUSearchRetrieveResponse response = client.searchRetrieve(request);
@@ -287,5 +289,5 @@ public class HZSKSRUIT {
                 "(fix test if we don't)",
                 response.getRecords().size(), is(greaterThan(0)));
     }
-                */
+
 } //
