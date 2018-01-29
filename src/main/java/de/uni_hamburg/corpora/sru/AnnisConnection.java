@@ -59,10 +59,10 @@ public class AnnisConnection {
             if (lastdigit == -1) {
                 lastdigit = lhs.length();
             }
-            System.out.println("DEBUG: " + firstdigit + ", " + lastdigit +
-                    " in " +                    lhs);
             Integer lhsID = Integer.parseInt(lhs.substring(firstdigit,
                     lastdigit));
+            firstdigit = -1;
+            lastdigit = -1;
             for (int i = 0; i < rhs.length(); i++) {
                 if (Character.isDigit(rhs.charAt(i))) {
                     firstdigit = i;
@@ -97,6 +97,7 @@ public class AnnisConnection {
     static {
         PID2NAME = new HashMap<String, String>();
         PID2NAME.put("http://hdl.handle.net/11022/0000-0007-C2FA-4", "ReN_2017-09-05");
+        PID2NAME.put("http://hdl.handle.net/11022/0000-0007-C4B1-3", "ReN_2017-12-06");
         PID2NAME.put("http://hdl.handle.net/11022/0000-0000-82AC-B", "a5.hausa.news");
         PID2NAME.put("http://hdl.handle.net/11022/0000-0000-82AD-A",
                 "a5.hausa.umarnin.uwa_V2");
@@ -125,7 +126,7 @@ public class AnnisConnection {
      * does not have the right to search archived corpora.
      */
     static final String ALL_CORPORA =
-        "ReN_2017-09-05,a5.hausa.news,a5.hausa.umarnin.uwa_V2,b1.aja,b1.fon," +
+        "ReN_2017-12-06,a5.hausa.news,a5.hausa.umarnin.uwa_V2,b1.aja,b1.fon," +
         "b1.foodo,b1.yom,b2.bura,b2.guruntum,b2.hausa,b2.marghi,b2.tangale," +
         "b4.heliand,b4.HIPKON,b4.ludolf,b4.muspilli,b4.otfrid," +
         "b4.saechsiche_weltchronik,b4.tatian,b7.wolof.web,b7.wolof.wiki";
@@ -390,7 +391,6 @@ public class AnnisConnection {
         Collections.sort(ids, new SortAnnisIDComparator());
         for (AdvancedSearchResultSegment token : tokenizedText) {
             String id = ids.get(i);
-            System.out.println("realigning: " + id);
             for (Entry<String, Map<String, AdvancedSearchResultSegment>> layer :
                     tokenmap.entrySet()) {
                 String layerName = layer.getKey();
@@ -494,7 +494,6 @@ public class AnnisConnection {
             // I guess id is besser than long_id?
             used_id = id;
         }
-        System.out.println("add segments from token id: " + used_id);
         ids.add(used_id);
         if (pos != null) {
             AdvancedSearchResultSegment seg = new

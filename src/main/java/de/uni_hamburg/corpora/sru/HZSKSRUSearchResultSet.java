@@ -142,26 +142,18 @@ public class HZSKSRUSearchResultSet extends SRUSearchResultSet {
             throws XMLStreamException {
         final AdvancedSearchResult rec =
             advancedResult.getRecordAt(pos);
-        System.out.println("DEBUG: writing XML at " + pos);
         // advanced_
         XMLStreamWriterHelper.writeStartResource(writer, rec.getPID(),
                 rec.getPage());
-        System.out.println("DEBUG½: writing XML at " + pos);
         XMLStreamWriterHelper.writeStartResourceFragment(writer, null,
                 null);
-        System.out.println("DEBUG1: writing XML at " + pos);
         AdvancedDataViewWriter helper = new AdvancedDataViewWriter(
                 AdvancedDataViewWriter.Unit.TIMESTAMP);
-        System.out.println("DEBUG§: writing XML at " + pos);
         URI layerId =
             URI.create("http://corpora.uni-hamburg.de/Layers/orth1");
-        System.out.println("DEBUG!!: writing XML at " + pos);
         List<AdvancedSearchResultSegment> highlights =
             rec.getResultHighlights();
-        System.out.println("DEBUG: highlights? " + highlights.size());
         for (AdvancedSearchResultSegment seg : highlights) {
-            System.out.println("DEBUG: adding" + seg.getStart() + "–" +
-                    seg.getEnd() + "\t" + seg.getText());
             if (seg.isHighlighted()) {
                 helper.addSpan(layerId, Math.round(seg.getStart()),
                         Math.round(seg.getEnd()), seg.getText(), 1);
@@ -170,11 +162,9 @@ public class HZSKSRUSearchResultSet extends SRUSearchResultSet {
                         Math.round(seg.getEnd()), seg.getText());
             }
         }
-        System.out.println("DEBUG2: writing XML at " + pos);
         for(Map.Entry<String, List<AdvancedSearchResultSegment>> entry :
                 rec.getChildLayers().entrySet()) {
             String name = entry.getKey();
-            System.out.println("DEBUG4: writing layer " + name);
             List<AdvancedSearchResultSegment> segments =
                 entry.getValue();
             URI layer = null;
@@ -220,17 +210,12 @@ public class HZSKSRUSearchResultSet extends SRUSearchResultSet {
             }
             AdvancedSearchResultSegment previousSegments = null;
             for (AdvancedSearchResultSegment segment : segments) {
-                System.out.println("DEBUG5: maybe writing segment " +
-                        segment.getStart() + "–" + segment.getEnd() +
-                        ":" + segment.getText() + " / " +
-                        segment.getAnnotation());
                 if (previousSegments == null) {
                     previousSegments = segment;
                 }
                 else if ((previousSegments.getStart() < 0) ||
                         (previousSegments.getEnd() < 0)) {
                     // FIXME: should interpolate;
-                    System.out.println("DEBUGX: no");
                     previousSegments = segment;
                     continue;
                 }
@@ -279,12 +264,10 @@ public class HZSKSRUSearchResultSet extends SRUSearchResultSet {
                }
             }
         }
-        System.out.println("DEBUG3: writing XML at " + pos);
         helper.writeHitsDataView(writer, layerId);
         helper.writeAdvancedDataView(writer);
         XMLStreamWriterHelper.writeEndResourceFragment(writer);
         XMLStreamWriterHelper.writeEndResource(writer);
-        System.out.println("DEBUG9: writing XML at " + pos);
     }
 
     /** Has none. */
