@@ -267,8 +267,8 @@ public class HZSKSRUIT {
 
     @Test
     public void searchAnnis() throws SRUClientException {
-        // ReN
-        String query = "klagent";
+        // a5.hausa.news
+        String query = "Friedrich";
         SRUSearchRetrieveRequest request = new
             SRUSearchRetrieveRequest(annishost);
         request.setQuery("fcs", query);
