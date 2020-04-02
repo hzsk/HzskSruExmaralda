@@ -93,6 +93,10 @@ public class HZSKQuery {
                             (expression.getLayerQualifier() == null)) {
                         setTextSearch(
                                 expression.getRegexValue());
+                    } else if (expression.getLayerIdentifier().equals("word") &&
+                            (expression.getLayerQualifier() == null)) {
+                        setTextSearch(
+                                expression.getRegexValue());
                     } else if (expression.getLayerIdentifier().equals("pos") &&
                             (expression.getLayerQualifier() == null)) {
                         setPosSearch(
