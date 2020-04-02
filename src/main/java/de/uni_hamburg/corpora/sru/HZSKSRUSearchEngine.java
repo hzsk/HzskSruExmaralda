@@ -71,7 +71,6 @@ public class HZSKSRUSearchEngine extends SimpleEndpointSearchEngineBase {
             LoggerFactory.getLogger(HZSKSRUSearchEngine.class);
 
     private SQLCorpusConnection corpusDB;
-    private AnnisConnection annis;
 
     /**
      * Create endpoint description from bundled XML, fallback to DB.
@@ -166,8 +165,6 @@ public class HZSKSRUSearchEngine extends SimpleEndpointSearchEngineBase {
             Builder builder, Map<String, String> params)
     throws SRUConfigException {
         corpusDB = new SQLCorpusConnection();
-        //annis = new AnnisConnection();
-        annis = null;
     }
 
     /** Just blurt out a term on a specific search.
@@ -251,22 +248,8 @@ public class HZSKSRUSearchEngine extends SimpleEndpointSearchEngineBase {
                         e);
             }
         }
-        AdvancedSearchResultSet aResult = null;
-        if (annis != null) {
-            try {
-                aResult = annis.query(hzskQuery, request.getStartRecord(),
-                        maximumRecords);
-            } catch (Exception e) {
-                logger.error("error processing query", e);
-                throw new SRUException(
-                        SRUConstants.SRU_CANNOT_PROCESS_QUERY_REASON_UNKNOWN,
-                        "Error processing query " + e + ": " + e.getMessage() +
-                        "\r\n" + e.getStackTrace()[0],
-                        e);
-            }
-        }
         return new HZSKSRUSearchResultSet(diagnostics,
-                AdvancedSearchResultSet.merge(dBresult, aResult),
+                dBresult,
                 request);
 
     }
