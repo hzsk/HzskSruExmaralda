@@ -20,11 +20,6 @@
         </repository>
     </repositories>
     <dependencies>
-        <!-- <dependency>
-            <groupId>org.exmaralda</groupId>
-            <artifactId>exmaralda</artifactId>
-            <version>1.9</version>
-        </dependency>-->
         <dependency>
             <groupId>eu.clarin.sru</groupId>
             <artifactId>sru-server</artifactId>
@@ -51,10 +46,15 @@
             <artifactId>fcs-simple-endpoint</artifactId>
             <version>1.3.0</version>
         </dependency>
+        <!--
+          https://mvnrepository.com/artifact/org.z3950.zing/cql-java
+          XXX: if this dows not automatically work for you, just mvn
+          install github version!!!
+        -->
         <dependency>
             <groupId>org.z3950.zing</groupId>
             <artifactId>cql-java</artifactId>
-            <version>1.11</version>
+            <version>1.13</version>
         </dependency>
         <dependency>
             <groupId>javax</groupId>
@@ -62,7 +62,6 @@
             <version>6.0</version>
             <scope>provided</scope>
         </dependency>
-
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
@@ -78,13 +77,13 @@
         <dependency>
             <groupId>eu.clarin.sru.fcs</groupId>
             <artifactId>fcs-simple-client</artifactId>
-            <version>1.4.0-SNAPSHOT</version>
+            <version>1.3.0</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>eu.clarin.sru</groupId>
             <artifactId>sru-client</artifactId>
-            <version>1.9.0-SNAPSHOT</version>
+            <version>1.8.0</version>
             <scope>test</scope>
         </dependency>
 
