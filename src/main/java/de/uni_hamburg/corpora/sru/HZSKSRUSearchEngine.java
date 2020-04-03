@@ -96,7 +96,7 @@ public class HZSKSRUSearchEngine extends SimpleEndpointSearchEngineBase {
         try {
             DBDescriptionResult resources =
                 corpusDB.getResourceInfos(HZSK_MAX_CORPORA_IN_DB);
-            List entries = new ArrayList<ResourceInfo>();
+            List<ResourceInfo> entries = new ArrayList<ResourceInfo>();
             // Using the same stuff for
             List<Layer> commonLayers = new ArrayList<Layer>();
             List<DataView> commonDataviews = new ArrayList<DataView>();
