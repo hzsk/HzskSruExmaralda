@@ -111,7 +111,8 @@ public class HZSKSRUSearchResultSet extends SRUSearchResultSet {
     /** Get current PID. */
     @Override
     public String getRecordIdentifier() {
-        return advancedResult.getRecordAt(pos).getPID();
+        //return advancedResult.getRecordAt(pos).getPID();
+        return null;
     }
 
     /** Advance to next result and return whether it exists.
@@ -144,7 +145,7 @@ public class HZSKSRUSearchResultSet extends SRUSearchResultSet {
             advancedResult.getRecordAt(pos);
         // advanced_
         XMLStreamWriterHelper.writeStartResource(writer, rec.getPID(),
-                rec.getPage());
+                null);
         XMLStreamWriterHelper.writeStartResourceFragment(writer, null,
                 null);
         AdvancedDataViewWriter helper = new AdvancedDataViewWriter(
