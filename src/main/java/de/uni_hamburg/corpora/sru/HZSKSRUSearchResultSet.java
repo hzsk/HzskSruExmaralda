@@ -148,8 +148,9 @@ public class HZSKSRUSearchResultSet extends SRUSearchResultSet {
                 null);
         XMLStreamWriterHelper.writeStartResourceFragment(writer, null,
                 null);
+        // XXX: aggregator etc. don't support timestamps...
         AdvancedDataViewWriter helper = new AdvancedDataViewWriter(
-                AdvancedDataViewWriter.Unit.TIMESTAMP);
+                AdvancedDataViewWriter.Unit.ITEM);
         URI layerId =
             URI.create("http://corpora.uni-hamburg.de/Layers/orth1");
         List<AdvancedSearchResultSegment> highlights =

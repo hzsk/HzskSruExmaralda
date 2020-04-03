@@ -36,7 +36,7 @@ import java.net.URISyntaxException;
 public class SQLCorpusConnection {
 
     private final int MAX_LAYERS = 10; // don't query more layers under text
-    private final boolean USE_TLI = true; // use tli_{s,e} instead of char_{s,e}
+    private final boolean USE_TLI = false; // use tli_{s,e} instead of char_{s,e}
     private final boolean USE_UTTERANCE_WORD = true; // which part of db...
     private DataSource datasource;
 
