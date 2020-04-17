@@ -6,15 +6,12 @@
         <title xml:lang="fi">Hamburin korpuskeskus</title>
         <description xml:lang="de">
           Suche im Hamburg Zentrum für Sprachkorpora (HZSK) via SRU.
-          Diese endpoint sucht Korpora aus ANNIS.
         </description>
         <description xml:lang="en" primary="true">
           Search the Hamburg Centre for Language Corpora (HZSK) via SRU.
-          This end-point is for corpora hosted on ANNIS platform.
         </description>
         <description xml:lang="fi">
           Hae Hampurin korpuskeskuksesta (HZSK:sta) SRU:lla.
-          Tämä endpoint on ANNIS-korpusten hakuja varten.
         </description>
         <author xml:lang="en">Hamburg Centre for Language Corpora</author>
         <author xml:lang="de" primary="true">Hamburger Zentrum für Sprachkorpora</author>
